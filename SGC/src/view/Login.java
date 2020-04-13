@@ -4,6 +4,7 @@ import control.Usuario;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Nicolas
@@ -15,6 +16,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        setLocationRelativeTo(null);//Centraliza a tela
     }
 
     /**
@@ -33,6 +35,7 @@ public class Login extends javax.swing.JFrame {
         bLogar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(173, 72, 45));
 
         tMatricula.setText("Matricula:");
 
@@ -89,13 +92,18 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bLogarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLogarActionPerformed
+
         Usuario usr = new Usuario();
         try {
             usr.logar(cMatricula.getText(), cSenha.getText());
             if(usr.isLogado()){
-                System.out.println("Logou");
+                this.dispose();
+                if("MASTER".equals(usr.getTipoUsuario()))
+                    new DesktopMaster().setVisible(true);
+                else
+                    new Desktop().setVisible(true);
             } else {
-                System.out.println("Não está logado");
+                JOptionPane.showMessageDialog(rootPane, "Usuario e senha não encontrados", "Usuario e Senha Errados", JOptionPane.UNDEFINED_CONDITION);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);

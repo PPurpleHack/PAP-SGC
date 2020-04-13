@@ -1,6 +1,6 @@
 package control;
 
-public class Config {
+public class Control {
     private static final String SALT = "DD58eS$@ss";
     private static final String SENHAPADRAO = "123456";
 
