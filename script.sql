@@ -1,4 +1,4 @@
-############################################Script Principal###################################################
+############################################Script Principal#################################################
 ##CRIA A TABELA DE FUNÇÕES DOS FUNCIONARIOS NA EMPRESA
 CREATE TABLE funcao(
 	idFuncao INT(2) NOT NULL AUTO_INCREMENT,
@@ -47,7 +47,6 @@ CREATE TABLE funcionario(
 	funcao INT(2) NOT NULL,
 	estabelecimento INT(4) NOT NULL,
 	CONSTRAINT pk_matricula PRIMARY KEY(matricula),
-	CONSTRAINT ck_login CHECK(login NULL OR login = matricula),
 	CONSTRAINT fk_funcao FOREIGN KEY(funcao) REFERENCES funcao(idfuncao),
 	CONSTRAINT fk_estabelecimento FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento)
 );
@@ -59,13 +58,36 @@ CREATE TABLE funcionario_telefone(
 	ddd VARCHAR(3) NOT NULL,
 	numero VARCHAR(9) NOT NULL,
 	CONSTRAINT pk_func_telefone PRIMARY KEY(idFuncTelefone),
-	CONSTRAINT fk_func FOREIGN KEY(funcionario) REFERENCES estabelecimento(matricula)
+	CONSTRAINT fk_func FOREIGN KEY(funcionario) REFERENCES funcionario(matricula)
 );
 
-##----------------
+##CRIA A TABELA SETOR, REFERENTE AO SETOR QUE É ALOCADO O PRODUTO
+CREATE TABLE setor(
+	idSetor INT(3) NOT NULL AUTO_INCREMENT,
+	nome VARCHAR(20) NOT NULL,
+	estabelecimento INT(4) NOT NULL,
+	CONSTRAINT pk_setor PRIMARY KEY(idSetor),
+	CONSTRAINT fk_estabelecimento_ FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+);
+
+##CRIA A TABELA ESTOQUE
+##A CHAVE PRIMARIA É COMPOSTA PELO CODIGO DO PRODUTO E O ESTABELECIMENTO
+CREATE TABLE estoque(
+	codProduto varchar(14) NOT NULL,
+	estabelecimento INT(4) NOT NULL,
+	nome VARCHAR(30) NOT NULL,
+	qtdProduto INT(6) NOT NULL,
+	precoVarejo DOUBLE(7,2) NOT NULL,
+	descontoAtacado DOUBLE(3,2),##Desconto que sera feito no produto quando for atacado em porcentagem
+	qtdAtacado INT(3),##Quantidade de itens para serem considerado atacado
+	setor INT(3),
+	CONSTRAINT pk_estoque PRIMARY KEY(codProduto, estabelecimento)
+);
+ALTER TABLE estoque
+ADD CONSTRAINT fk_estab_estoque FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento);
+
+##----------------------------------------------------------------------------------------------------------
 ##PRECISA CRIAR AS TABELAS REFERENTE AOS PRODUTOS E ESTOQUE
-##ESTOQUE
 ##ENTRADA
 ##SAÍDA
-##LOTES
-##SETOR
+##PRECISA ADICIONAR UMA VERIFICAÇÃO DE SE O LOGIN É IGUAL A MATRICULA
