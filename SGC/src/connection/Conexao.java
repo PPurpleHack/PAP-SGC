@@ -33,7 +33,6 @@ public class Conexao {
             Logger.getLogger(Conexao.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
         return con;
     }
     
