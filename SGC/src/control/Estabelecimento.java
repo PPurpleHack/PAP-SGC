@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,15 +26,18 @@ public class Estabelecimento {
     private String bairro;
     private String estado;
     private String pais;
-    private ArrayList<String> telefone =  new ArrayList();
+    private ArrayList<String> telefone;
     
-    public Estabelecimento(){}
+    public Estabelecimento(){
+        this.telefone = new ArrayList();
+    }
     
     public Estabelecimento(int id) throws SQLException{
         //Carrega um estabelecimento
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        this.telefone = new ArrayList();
         
         stmt = con.prepareStatement("SELECT     * " +
                                     "FROM       estabelecimento " +
@@ -202,8 +207,9 @@ public class Estabelecimento {
         Conexao.closeConnection(con, stmt);
     }
     
-    public ArrayList<String> listaEstabelecimentos(ArrayList<String> filtros){
-        ArrayList<String> estabelecimentos = new ArrayList();
+    public ArrayList<Map> listaEstabelecimentos(Map<String, String> filtros) throws SQLException{
+        ArrayList<Map> estabelecimentos = new ArrayList();
+        Map<String, String> linha;
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -212,11 +218,26 @@ public class Estabelecimento {
         query = "SELECT * FROM estabelecimento "
                 + "WHERE 1 = 1 ";
         
-        System.out.println(filtros);
-        for(int x = 0; x < filtros.size(); x++){
-            
-        }
+        //FILTROS
+        if(filtros.containsKey("cnpj")) query = query + "AND cnpj = '"+ filtros.get("cnpj") +"' ";
+        if(filtros.containsKey("cep")) query = query + "AND cep = '"+ filtros.get("cep") +"' ";
+        if(filtros.containsKey("estado")) query = query + "AND estado = '"+ filtros.get("estado") +"' ";
         
+        stmt = con.prepareStatement(query);
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            linha = new HashMap<String, String>();
+            linha.put("id", Integer.toString(rs.getInt("idEstabelecimento")));
+            linha.put("cnpj", rs.getString("cnpj"));
+            linha.put("nome", rs.getString("nome"));
+            linha.put("cep", rs.getString("cep"));
+            linha.put("numero", Integer.toString(rs.getInt("numero")));
+            linha.put("cidade", rs.getString("cidade"));
+            linha.put("bairro", rs.getString("bairro"));
+            linha.put("estado", rs.getString("estado"));
+            linha.put("pais", rs.getString("pais"));
+            estabelecimentos.add(linha);
+        }
         return estabelecimentos;
     }
 //########################################################################################################################################################    

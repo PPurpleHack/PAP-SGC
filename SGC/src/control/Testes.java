@@ -67,8 +67,14 @@ public class Testes {
         }*/
         
         //LISTA ESTABELECIMENTO
-        Estabelecimento estab = new Estabelecimento();
+        /*Estabelecimento estab = new Estabelecimento();
         Map<String, String> filtros = new HashMap<String, String>();
+        filtros.put("cnpj", "88.784.557/0001-11");
+        ArrayList<Map> estabelecimentos = estab.listaEstabelecimentos(filtros);
+        
+        for(Map e: estabelecimentos){
+            System.out.println(e);
+        }*/
         
         //--------------------------------------------FUNCIONARIO-------------------------------------------------------
         //CADASTRO FUNCIONARIO
