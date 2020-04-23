@@ -143,8 +143,8 @@ public class Funcionario {
                                     "		email," +
                                     "		funcao," +
                                     "		estabelecimento " +
-                                    "FROM 	funcionario" +
-                                    "WHERE      login = " + login +
+                                    "FROM 	funcionario " +
+                                    "WHERE      login = " + login + " " +
                                     "AND        senha = md5('" + senha + "')");
         rs = stmt.executeQuery();
         if(rs.next()){

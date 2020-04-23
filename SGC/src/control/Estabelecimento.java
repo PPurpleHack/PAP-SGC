@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,6 +24,7 @@ public class Estabelecimento {
     private String bairro;
     private String estado;
     private String pais;
+    private ArrayList<String> telefone =  new ArrayList();
     
     public Estabelecimento(){}
     
@@ -44,7 +48,22 @@ public class Estabelecimento {
             this.bairro = rs.getString("bairro");
             this.estado = rs.getString("estado");
             this.pais = rs.getString("pais");
+            this.carregaTelefones(con);
         }
+        Conexao.closeConnection(con, stmt, rs);
+    }
+    
+    private void carregaTelefones(Connection con) throws SQLException{
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        stmt = con.prepareStatement("SELECT CONCAT(\"0\", numero) telefone FROM estabelecimento_telefone " +
+                                    "WHERE estabelecimento = " + this.id + ";");
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            this.telefone.add(rs.getString("telefone"));
+        }
+        
         Conexao.closeConnection(con, stmt, rs);
     }
     
@@ -52,7 +71,7 @@ public class Estabelecimento {
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null; 
         ResultSet rs = null;
-        Integer rodou;
+        Integer rodou = null;
         String query = null;
         
         query = "INSERT INTO estabelecimento(cnpj, nome, cep, numero, cidade, bairro, estado, pais) " +
@@ -72,10 +91,31 @@ public class Estabelecimento {
             while(rs.next()){
                 this.id = rs.getInt(1);
             }
+            cadastraTelefone(con);
             Conexao.closeConnection(con, stmt, rs);
             return true;
         }
         return false;
+    }
+    
+    public void cadastraTelefone(Connection con) throws SQLException{
+        String query = null;
+        PreparedStatement stmt = null;
+        boolean primeiro = true;
+        
+        query = "INSERT INTO estabelecimento_telefone(estabelecimento, numero) ";
+        for(int x = 0; x < this.telefone.size()-1; x++){
+            if(primeiro) query = query + "VALUES";
+            primeiro = false;
+            query = query + "("+this.id + ", '" + this.telefone.get(x) + "'), ";
+                
+        }
+        if(primeiro) query = query + "VALUES(" + this.id + ", '" + this.telefone.get(this.telefone.size()-1) + "');";
+        else query = query + "(" + this.id + ", '" + this.telefone.get(this.telefone.size()-1) + "');";
+        
+        stmt = con.prepareStatement(query);
+        stmt.executeUpdate();
+        Conexao.closeConnection(con, stmt);
     }
     
     public boolean atualizarEstabelecimento() throws SQLException{
@@ -85,7 +125,7 @@ public class Estabelecimento {
         Integer rodou = null;
         String query = null;
         
-        query = "UPDATE estabelecimento"
+        query = "UPDATE estabelecimento "
               + "SET    cnpj = '"+this.cnpj+"', "
               + "       nome = '"+this.nome+"', "
               + "       cep = '"+this.cep+"', "
@@ -95,33 +135,96 @@ public class Estabelecimento {
               + "       estado = '"+this.estado+"', "
               + "       pais = '"+this.pais+"' "
               + "WHERE  idEstabelecimento = "+this.id;
-        stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        stmt = con.prepareStatement(query);
         rodou = stmt.executeUpdate();
         if(rodou == 1){
+            //Atualizar telefones
+            this.excluirTelefone(con, true);
+            this.cadastraTelefone(con);
             return true;
-        }
+        } 
         return false;
     }
     
-    public boolean exluirEstabelecimento() throws SQLException{
+    public int excluirEstabelecimento(){
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         Integer rodou = null;
         String query = null;
         
-        query = "";
-        stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-        rodou = stmt.executeUpdate();
-        if(rodou == 1){
-            return true;
+        try {
+            //Antes precisa excluir todos os telefones desse estabelecimento
+            this.excluirTelefone(con, true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Estabelecimento.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        
+        query = "DELETE FROM estabelecimento WHERE idEstabelecimento = "+ this.id +";";
+        try {
+            stmt = con.prepareStatement(query);
+            try {
+                rodou = stmt.executeUpdate();
+                if(rodou == 1)/*Conseguiu excluir com sucesso*/return 1;
+            } catch (SQLException ex) {
+                System.out.println(ex.getErrorCode());
+                return ex.getErrorCode();
+                //Logger.getLogger(Estabelecimento.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (SQLException ex) {
+            return ex.getErrorCode();
+            //Logger.getLogger(Estabelecimento.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //Ocorreu um erro enexperado
+        return -1;
     }
     
+    public void excluirTelefone(Connection con, String telefone) throws SQLException{
+        PreparedStatement stmt = null;
+        String query;
+        
+        query = "DELETE FROM estabelecimento_telefone " +
+                "WHERE estabelecimento = "+this.id+" " +
+                "AND	numero = '"+telefone+"'";
+        stmt = con.prepareStatement(query);
+        stmt.executeUpdate();
+        Conexao.closeConnection(con, stmt);
+    }
+    
+    public void excluirTelefone(Connection con, boolean todos) throws SQLException{
+        //Função para excluir todos os telefones de uma estabelecimento
+        PreparedStatement stmt = null;
+        String query;
+        
+        query = "DELETE FROM estabelecimento_telefone " +
+                "WHERE estabelecimento = "+this.id+";";
+        stmt = con.prepareStatement(query);
+        stmt.executeUpdate();
+        Conexao.closeConnection(con, stmt);
+    }
+    
+    public ArrayList<String> listaEstabelecimentos(ArrayList<String> filtros){
+        ArrayList<String> estabelecimentos = new ArrayList();
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String query = null;
+        
+        query = "SELECT * FROM estabelecimento "
+                + "WHERE 1 = 1 ";
+        
+        System.out.println(filtros);
+        for(int x = 0; x < filtros.size(); x++){
+            
+        }
+        
+        return estabelecimentos;
+    }
+//########################################################################################################################################################    
+//########################################################################################################################################################
+//########################################################################################################################################################    
     @Override
     public String toString() {
-        return "Estabelecimento{" + "id=" + id + ", cnpj=" + cnpj + ", nome=" + nome + ", cep=" + cep + ", numero=" + numero + ", cidade=" + cidade + ", bairro=" + bairro + ", estado=" + estado + ", pais=" + pais + '}';
+        return "Estabelecimento{" + "id=" + id + ", cnpj=" + cnpj + ", nome=" + nome + ", cep=" + cep + ", numero=" + numero + ", cidade=" + cidade + ", bairro=" + bairro + ", estado=" + estado + ", pais=" + pais + ", telefone=" + telefone + '}';
     }
     
     //Getters e Setters
@@ -196,7 +299,12 @@ public class Estabelecimento {
     public void setPais(String pais) {
         this.pais = pais;
     }
-    
-    
-    
+
+    public ArrayList<String> getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(ArrayList<String> telefone) {
+        this.telefone = telefone;
+    }
 }

@@ -1,11 +1,18 @@
 package control;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Testes {
     public static void main(String[] args) throws SQLException{
         
         //------------------------------------------ESTABELECIMENTO------------------------------------------------------
+        //CARREGA ESTABELECIMENTO
+        /*Estabelecimento estab = new Estabelecimento(8);
+        System.out.println(estab.getTelefone().size());*/
+        
         //CADASTRO ESTABELECIMENTO
         /*Estabelecimento estab = new Estabelecimento();
         estab.setCnpj("88.784.557/0001-01");
@@ -16,15 +23,52 @@ public class Testes {
         estab.setBairro("Samambaia Sul (Samambaia)");
         estab.setEstado("SP");
         estab.setPais("Brasil");
+        ArrayList<String> telefone =  new ArrayList();
+        telefone.add("011 22223333");
+        telefone.add("011 22223333");
+        telefone.add("011 22223333");
+        estab.setTelefone(telefone);
         estab.cadastrarEstabalecimento();
         System.out.println(estab.toString());*/
         
+        //CADASTRO TELEFONE ESTABELECIMENTO
+        /*Estabelecimento estab = new Estabelecimento(10);
+        ArrayList<String> telefone =  new ArrayList();
+        telefone.add("011 22223333");
+        telefone.add("011 22223333");
+        telefone.add("011 22223333");
+        telefone.add("011 22223333");
+        estab.setTelefone(telefone);
+        System.out.println(estab.getTelefone());
+        estab.cadastraTelefone();*/
+        
         //ATUALIZAR ESTABELECIMENTO
-        Estabelecimento estab = new Estabelecimento(8);
-        estab.setNome("Atualizado");
-        if(estab.atualizarEstabelecimento()){
-            System.out.println("ATUALIZOU");
-        }
+        //Estabelecimento estab = new Estabelecimento(8);
+
+        //EXCLUIR ESTABELECIMENTO
+        //Estabelecimento estab = new Estabelecimento(/*Colocar um id de um estabelecimento*/);
+        /*switch(estab.excluirEstabelecimento()){
+            case -1:
+                System.out.println("Erro não esperado durante a execução");
+                break;
+            case 1:
+                System.out.println("Excluiu");
+                break;
+            case 1064:
+                System.out.println("Foi encontrado um erro de sintaxe");
+                break;
+            case 1451:
+                System.out.println("Existe informações ligadas a esse dado que você está tentando excluir, "
+                        + "por isso não é possível realizar a exclusão");
+                break;
+            default:
+                System.out.println("Ocorreu um erro ainda não mapeado");
+                break;
+        }*/
+        
+        //LISTA ESTABELECIMENTO
+        Estabelecimento estab = new Estabelecimento();
+        Map<String, String> filtros = new HashMap<String, String>();
         
         //--------------------------------------------FUNCIONARIO-------------------------------------------------------
         //CADASTRO FUNCIONARIO
@@ -48,6 +92,15 @@ public class Testes {
         /*Funcionario func = new Funcionario(20);
         if(func.cadastrarConta("nicolas")){
             System.out.println("Cadastrou a conta");
+        }*/
+        
+        //LOGAR
+        /*Funcionario func = new Funcionario();
+        if(func.logar(19, "123")){
+            System.out.println("Logou");
+        }
+        if(!func.logar(19, "8723")){
+            System.out.println("Não logou");
         }*/
         
         
