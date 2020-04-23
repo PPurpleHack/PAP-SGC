@@ -27,8 +27,7 @@ CREATE TABLE estabelecimento(
 CREATE TABLE estabelecimento_telefone(
 	idEstabTelefone INT(4) NOT NULL AUTO_INCREMENT,
 	estabelecimento INT(4) NOT NULL,
-	ddd VARCHAR(3) NOT NULL,
-	numero VARCHAR(9) NOT NULL,
+	numero VARCHAR(13) NOT NULL,
 	CONSTRAINT pk_estab_telefone PRIMARY KEY(idEstabTelefone),
 	CONSTRAINT fk_estab FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento)
 );
