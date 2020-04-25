@@ -77,6 +77,7 @@ CREATE TABLE setor(
 ##CRIA A TABELA ESTOQUE
 ##A CHAVE PRIMARIA É COMPOSTA PELO CODIGO DO PRODUTO E O ESTABELECIMENTO
 CREATE TABLE estoque(
+	idEstoque INT(11) NOT NULL AUTO_INCREMENT,
 	codProduto varchar(14) NOT NULL,
 	estabelecimento INT(4) NOT NULL,
 	nome VARCHAR(30) NOT NULL,
@@ -85,7 +86,7 @@ CREATE TABLE estoque(
 	descontoAtacado DOUBLE(3,2),##Desconto que sera feito no produto quando for atacado em porcentagem
 	qtdAtacado INT(3),##Quantidade de itens para serem considerado atacado
 	setor INT(3),
-	CONSTRAINT pk_estoque PRIMARY KEY(codProduto, estabelecimento)
+	CONSTRAINT pk_estoque PRIMARY KEY(idEstoque)
 );
 ALTER TABLE estoque
 ADD CONSTRAINT fk_estab_estoque FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento);
@@ -93,15 +94,15 @@ ADD CONSTRAINT fk_estab_estoque FOREIGN KEY(estabelecimento) REFERENCES estabele
 ##CRIAÇÃO DA TABELA LOTE
 ##AS COMPRAS SÃO FEITAS EM LOTE, LOGO AQUI SERÃO GUARDADAS AS INFORMAÇÕES DE LOTE
 CREATE TABLE lote(
-	idLote VARCHAR(14) NOT NULL,
-	codProduto VARCHAR(14) NOT NULL,
-	estabelecimento INT(4) NOT NULL,
+	idLote INT(11) NOT NULL AUTO_INCREMENT,
+	codLote VARCHAR(14) NOT NULL,
+	estoque INT(11) NOT NULL,
 	dtmVencimento DATE,
 	qtdProduto DOUBLE(7,2) NOT NULL,
 	situacao VARCHAR(10) NOT NULL,##Possiveis situações: ESTOQUE, PRATELEIRA, ESGOTADO ou PERDIDO
 	vlrPago DOUBLE(11,2) NOT NULL,
-	CONSTRAINT pk_lote PRIMARY KEY(idLote, codProduto),
-	CONSTRAINT fk_estoque FOREIGN KEY(codProduto, estabelecimento) REFERENCES estoque(codProduto, estabelecimento),
+	CONSTRAINT pk_lote PRIMARY KEY(idLote),
+	CONSTRAINT fk_estoque FOREIGN KEY(estoque) REFERENCES estoque(idEstoque),
 	CONSTRAINT ck_situacao CHECK(situacao IN('ESTOQUE', 'PRATELEIRA', 'ESGOTADO', 'PERDIDO'))
 );
 
