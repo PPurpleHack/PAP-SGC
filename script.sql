@@ -59,8 +59,7 @@ ADD COLUMN cpf VARCHAR(15) NOT NULL;
 CREATE TABLE funcionario_telefone(
 	idFuncTelefone INT(4) NOT NULL AUTO_INCREMENT,
 	funcionario INT(4) NOT NULL,
-	ddd VARCHAR(3) NOT NULL,
-	numero VARCHAR(9) NOT NULL,
+	numero VARCHAR(13) NOT NULL,
 	CONSTRAINT pk_func_telefone PRIMARY KEY(idFuncTelefone),
 	CONSTRAINT fk_func FOREIGN KEY(funcionario) REFERENCES funcionario(matricula)
 );
@@ -90,7 +89,8 @@ CREATE TABLE estoque(
 );
 ALTER TABLE estoque
 ADD CONSTRAINT fk_estab_estoque FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento);
-
+ALTER TABLE estoque
+MODIFY COLUMN nome VARCHAR(200) NOT NULL,
 ##CRIAÇÃO DA TABELA LOTE
 ##AS COMPRAS SÃO FEITAS EM LOTE, LOGO AQUI SERÃO GUARDADAS AS INFORMAÇÕES DE LOTE
 CREATE TABLE lote(
@@ -108,25 +108,15 @@ CREATE TABLE lote(
 ALTER TABLE lote
 MODIFY COLUMN qtdProduto INT(6) NOT NULL;
 
-##CRIAÇÃO DA TABELA ENTRADA
-##REFERENTE A QUANDO ENTRAR DINHEIRO NO CAIXA
-CREATE TABLE entrada_caixa(
-	id INT(11) NOT NULL AUTO_INCREMENT,
-	tipo VARCHAR(5) NOT NULL,#Possiveis tipos: VENDA
-	vlrEntrada DOUBLE(11,2) NOT NULL,
-	CONSTRAINT pk_entrada PRIMARY KEY(id),
-	CONSTRAINT ck_tipo CHECK(tipo IN('VENDA'))
-);
-
 ##CRIAÇÃO DA TABELA CAIXA
 ##ESTÁ TABELA GUARDA OS REGISTROS RESUMIDOS DO FLUXO DO CAIXA, ENTRADA E SAIDA DE DINHEIRO
 CREATE TABLE caixa(
 	idCaixa INT(11) NOT NULL AUTO_INCREMENT,
 	tipo VARCHAR(3) NOT NULL,##Possiveis valores: IN(Entrada de caixa), OUT(Saida de caixa)
-	descricao VARCHAR(5),#Possiveis valores: COMPRA, VENDA E PERCA
+	descricao VARCHAR(6),#Possiveis valores: COMPRA, VENDA E PERCA
 	vlrDinheiro DOUBLE(11,2) NOT NULL,
 	CONSTRAINT pk_caixa PRIMARY KEY(idCaixa),
-	CONSTRAINT ck_descricao CHECK(descricao IN('COMPRA', 'VENDA', 'PERDA')),
+	CONSTRAINT ck_descricao CHECK(descricao = 'COMPRA' OR descricao = 'VENDA' OR descricao = 'PERDA'),
 	CONSTRAINT ck_tipo CHECK(tipo IN('IN', 'OUT'))
 );
 
