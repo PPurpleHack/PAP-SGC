@@ -19,6 +19,15 @@ public class Funcionarios extends javax.swing.JInternalFrame {
         
         //Configurações de aparecencia
         
+        //Adiciona os itens a combo box estabelecimento
+        for(int x = 1; x <= 5; x++){
+            cbEstabelecimento.addItem("Estabelecimento "+x);
+        }
+        
+        //Adiciona os itens a combo box função
+        for(int x = 1; x <= 5; x++){
+            cbFuncao.addItem("Funcao "+x);
+        }
     }
 
     /**
@@ -33,12 +42,13 @@ public class Funcionarios extends javax.swing.JInternalFrame {
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        bAddFuncionario = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        cbFuncao = new javax.swing.JComboBox<>();
+        cbEstabelecimento = new javax.swing.JComboBox<>();
         bPesquisar = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setBorder(null);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -62,8 +72,13 @@ public class Funcionarios extends javax.swing.JInternalFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 71, 690, 340));
 
-        jButton2.setText("Adicionar Funcionario");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 150, -1));
+        bAddFuncionario.setText("Adicionar Funcionario");
+        bAddFuncionario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bAddFuncionarioActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bAddFuncionario, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 150, -1));
 
         jButton3.setText("Editar Selecionado");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -72,13 +87,13 @@ public class Funcionarios extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 440, 150, -1));
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 650, -1));
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, 610, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, 150, -1));
+        cbFuncao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<Função>" }));
+        getContentPane().add(cbFuncao, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 10, 150, -1));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 150, -1));
+        cbEstabelecimento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<Estabelecimentos>" }));
+        getContentPane().add(cbEstabelecimento, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 150, -1));
 
         bPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/procurar_24px.png"))); // NOI18N
         bPesquisar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -87,6 +102,9 @@ public class Funcionarios extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(bPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 35, -1, -1));
+
+        jLabel1.setText("Nome:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 42, -1, -1));
 
         setBounds(0, 0, 730, 520);
     }// </editor-fold>//GEN-END:initComponents
@@ -99,14 +117,20 @@ public class Funcionarios extends javax.swing.JInternalFrame {
         System.out.println("Vai relizar a pesquisa");
     }//GEN-LAST:event_bPesquisarMouseClicked
 
+    private void bAddFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddFuncionarioActionPerformed
+        CadFuncionario cadFunc = new CadFuncionario();
+        cadFunc.setVisible(true);
+    }//GEN-LAST:event_bAddFuncionarioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bAddFuncionario;
     private javax.swing.JLabel bPesquisar;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> cbEstabelecimento;
+    private javax.swing.JComboBox<String> cbFuncao;
     private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JInternalFrame jInternalFrame1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;

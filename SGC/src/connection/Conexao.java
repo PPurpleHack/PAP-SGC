@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 public class Conexao {
     
     private static final String DRIVER = "org.mariadb.jdbc.Driver";
-    private static final String URL = "jdbc:mariadb://localhost:3306/sgc";
+    private static final String URL = "jdbc:mariadb://localhost:3306/pap_aplicacao";
     private static final String USER = "root";
     private static final String PASS = "";
     

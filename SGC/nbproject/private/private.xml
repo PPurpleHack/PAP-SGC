@@ -4,8 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/control/Estabelecimento.java</file>
+            <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/control/Lote.java</file>
+            <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/connection/Conexao.java</file>
+            <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/control/Estoque.java</file>
+            <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/control/Control.java</file>
             <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/control/Funcionario.java</file>
-            <file>file:/C:/Users/Nicolas/Documents/PROJETOS/PAP/SGC/src/control/Testes.java</file>
         </group>
     </open-files>
 </project-private>
