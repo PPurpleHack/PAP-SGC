@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
-/**
- *
- * @author Nicolas
- */
+import control.Funcionario;
+
 public class Main extends javax.swing.JFrame {
     
+    private static Funcionario user;
     private static Estoque estoque;
     private static Funcionarios funcionarios;
     private static Estabelecimentos estabelecimentos;
@@ -18,7 +12,22 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
-    public Main() {
+    public Main(){
+        initComponents();
+        
+        Main.estoque = new Estoque();
+        pConteudo.add(Main.estoque);
+        Main.funcionarios = new Funcionarios();
+        pConteudo.add(Main.funcionarios);
+        Main.estabelecimentos = new Estabelecimentos();
+        pConteudo.add(Main.estabelecimentos);
+    }
+    
+    public Main(Funcionario usr) {
+        //Usuario que se logou
+        Main.user = usr;
+        System.out.println(Main.user);
+        
         initComponents();
         
         Main.estoque = new Estoque();

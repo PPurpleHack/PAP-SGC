@@ -125,7 +125,7 @@ public class Funcionario {
         return false;
     }
     
-    public boolean logar(int login, String senha) throws SQLException{
+    public boolean logar(String login, String senha) throws SQLException{
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;

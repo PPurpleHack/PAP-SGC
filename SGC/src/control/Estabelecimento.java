@@ -96,7 +96,8 @@ public class Estabelecimento {
             while(rs.next()){
                 this.id = rs.getInt(1);
             }
-            cadastraTelefone(con);
+            
+            if(this.telefone.size() != 0) cadastraTelefone(con);
             Conexao.closeConnection(con, stmt, rs);
             return true;
         }
@@ -107,6 +108,8 @@ public class Estabelecimento {
         String query = null;
         PreparedStatement stmt = null;
         boolean primeiro = true;
+        
+        System.out.println("Entrou cadastra telefone");
         
         query = "INSERT INTO estabelecimento_telefone(estabelecimento, numero) ";
         for(int x = 0; x < this.telefone.size()-1; x++){
@@ -171,7 +174,8 @@ public class Estabelecimento {
                 rodou = stmt.executeUpdate();
                 if(rodou == 1)/*Conseguiu excluir com sucesso*/return 1;
             } catch (SQLException ex) {
-                System.out.println(ex.getErrorCode());
+                System.out.println("Erro SQL: "+ex.getErrorCode());
+                System.out.println(ex);
                 return ex.getErrorCode();
                 //Logger.getLogger(Estabelecimento.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -192,6 +196,18 @@ public class Estabelecimento {
                 "AND	numero = '"+telefone+"'";
         stmt = con.prepareStatement(query);
         stmt.executeUpdate();
+    }
+    
+    public void excluirTelefone(String telefone) throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt = null;
+        String query;
+        
+        query = "DELETE FROM estabelecimento_telefone " +
+                "WHERE estabelecimento = "+this.id+" " +
+                "AND	numero = '"+telefone+"'";
+        stmt = con.prepareStatement(query);
+        stmt.executeUpdate();
         Conexao.closeConnection(con, stmt);
     }
     
@@ -204,7 +220,6 @@ public class Estabelecimento {
                 "WHERE estabelecimento = "+this.id+";";
         stmt = con.prepareStatement(query);
         stmt.executeUpdate();
-        Conexao.closeConnection(con, stmt);
     }
     
     public ArrayList<Map> listaEstabelecimentos(Map<String, String> filtros) throws SQLException{

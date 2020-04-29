@@ -14,7 +14,7 @@ public class Estoque extends javax.swing.JInternalFrame {
     /**
      * Creates new form Estoque
      */
-    public Estoque() {
+    public Estoque(){
         initComponents();
     }
 
@@ -37,6 +37,8 @@ public class Estoque extends javax.swing.JInternalFrame {
         jComboBox2 = new javax.swing.JComboBox<>();
         jButton4 = new javax.swing.JButton();
         bPesquisar = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
+        bCadProduto = new javax.swing.JButton();
 
         setBorder(null);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -61,7 +63,7 @@ public class Estoque extends javax.swing.JInternalFrame {
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 71, 690, 340));
 
         jButton2.setText("Editar produto");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 440, 150, -1));
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, 150, -1));
 
         jButton3.setText("Excluir produto");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -69,7 +71,7 @@ public class Estoque extends javax.swing.JInternalFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 440, 150, -1));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 460, 150, -1));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 650, -1));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -78,8 +80,8 @@ public class Estoque extends javax.swing.JInternalFrame {
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 150, -1));
 
-        jButton4.setText("Adicionar produto");
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 150, -1));
+        jButton4.setText("Abastecer Estoque");
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 430, 330, 50));
 
         bPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/procurar_24px.png"))); // NOI18N
         bPesquisar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -88,6 +90,22 @@ public class Estoque extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(bPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 35, -1, -1));
+
+        jButton5.setText("Excluir produto");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 430, 150, -1));
+
+        bCadProduto.setText("Cadastrar produto");
+        bCadProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCadProdutoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bCadProduto, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, 150, -1));
 
         setBounds(0, 0, 730, 520);
     }// </editor-fold>//GEN-END:initComponents
@@ -100,12 +118,23 @@ public class Estoque extends javax.swing.JInternalFrame {
         System.out.println("Vai relizar a pesquisa");
     }//GEN-LAST:event_bPesquisarMouseClicked
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void bCadProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCadProdutoActionPerformed
+        CadProduto cadProd = new CadProduto();
+        cadProd.setVisible(true);
+    }//GEN-LAST:event_bCadProdutoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bCadProduto;
     private javax.swing.JLabel bPesquisar;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JInternalFrame jInternalFrame1;
