@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -93,6 +96,34 @@ public class Setor {
             return true;
         }
         return false;
+    }
+    
+    public ArrayList<Map> lista(Map<String, String> filtros) throws SQLException{
+        ArrayList<Map> estabelecimentos = new ArrayList();
+        Map<String, String> linha;
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String query = null;
+        
+        query = "SELECT * FROM setor "
+                + "WHERE 1 = 1 ";
+        
+        //FILTROS
+        if(filtros.containsKey("estabelecimento")) query = query + "AND estabelecimento = '"+ filtros.get("estabelecimento") +"' ";
+        if(filtros.containsKey("nome")) query = query + "AND nome = '"+ filtros.get("nome") +"' ";
+        
+        stmt = con.prepareStatement(query);
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            linha = new HashMap<String, String>();
+            linha.put("id", Integer.toString(rs.getInt("idSetor")));
+            linha.put("nome", rs.getString("nome"));
+            linha.put("cnpj", Integer.toString(rs.getInt("estabelecimento")));
+            estabelecimentos.add(linha);
+        }
+        Conexao.closeConnection(con, stmt, rs);
+        return estabelecimentos;
     }
 
     @Override

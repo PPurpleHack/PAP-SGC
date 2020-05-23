@@ -1,6 +1,7 @@
 package view;
 
 import control.Funcionario;
+import java.sql.SQLException;
 
 public class Main extends javax.swing.JFrame {
     
@@ -8,22 +9,26 @@ public class Main extends javax.swing.JFrame {
     private static Estoque estoque;
     private static Funcionarios funcionarios;
     private static Estabelecimentos estabelecimentos;
+    private static Setores setores;
+    private static Funcoes funcoes;
     
-    /**
-     * Creates new form Login
-     */
     public Main(){
         initComponents();
         
         Main.estoque = new Estoque();
         pConteudo.add(Main.estoque);
-        Main.funcionarios = new Funcionarios();
+        Main.funcionarios = new Funcionarios(this);
         pConteudo.add(Main.funcionarios);
-        Main.estabelecimentos = new Estabelecimentos();
+        Main.estabelecimentos = new Estabelecimentos(this);
         pConteudo.add(Main.estabelecimentos);
+        Main.setores = new Setores(this);
+        pConteudo.add(Main.setores);
+        Main.funcoes = new Funcoes(this);
+        pConteudo.add(Main.funcoes);
+        
     }
     
-    public Main(Funcionario usr) {
+    public Main(Funcionario usr) throws SQLException{
         //Usuario que se logou
         Main.user = usr;
         System.out.println(Main.user);
@@ -32,10 +37,14 @@ public class Main extends javax.swing.JFrame {
         
         Main.estoque = new Estoque();
         pConteudo.add(Main.estoque);
-        Main.funcionarios = new Funcionarios();
+        Main.funcionarios = new Funcionarios(this);
         pConteudo.add(Main.funcionarios);
-        Main.estabelecimentos = new Estabelecimentos();
+        Main.estabelecimentos = new Estabelecimentos(this);
         pConteudo.add(Main.estabelecimentos);
+        Main.setores = new Setores(this);
+        pConteudo.add(Main.setores);
+        Main.funcoes = new Funcoes(this);
+        pConteudo.add(Main.funcoes);
     }
 
     /**
@@ -212,31 +221,30 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        this.fechaTelas(evt);
+        this.fechaTelas();
         Main.estoque.setVisible(true);
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void bFuncionariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFuncionariosActionPerformed
-        
-        this.fechaTelas(evt);
+        this.fechaTelas();
         Main.funcionarios.setVisible(true);
-        
     }//GEN-LAST:event_bFuncionariosActionPerformed
 
     private void bEstabelecimentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEstabelecimentosActionPerformed
-        this.fechaTelas(evt);
+        this.fechaTelas();
         Main.estabelecimentos.setVisible(true);
     }//GEN-LAST:event_bEstabelecimentosActionPerformed
     
     //Verifica e fecha telas
-    private void fechaTelas(java.awt.event.ActionEvent evt){
+    public void fechaTelas(){
         
         if(Main.estoque.isVisible()) Main.estoque.setVisible(false);
         else if(Main.funcionarios.isVisible()) Main.funcionarios.setVisible(false);
         else if(Main.estabelecimentos.isVisible()) Main.estabelecimentos.setVisible(false);
+        else if(Main.setores.isVisible()) Main.setores.setVisible(false);
+        else if(Main.funcoes.isVisible()) Main.setores.setVisible(false);
         else System.out.println("Entrou em um nehuma tela visivel");
+        
     }
     
     /**
@@ -275,7 +283,20 @@ public class Main extends javax.swing.JFrame {
         });
         
     }
+    
+    //getter and setters
+    public static Setores getSetores() {
+        return setores;
+    }
 
+    public static Estabelecimentos getEstabelecimentos() {
+        return estabelecimentos;
+    }
+    
+    public static Funcoes getFuncoes(){
+        return funcoes;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bEstabelecimentos;
     private javax.swing.JButton bFuncionarios;

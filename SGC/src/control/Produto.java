@@ -3,10 +3,13 @@ package control;
 import java.sql.Connection;
 import java.sql.SQLException;
 import connection.Conexao;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
-public class Estoque {
+public class Produto {
     
     private int id;
     private String codProduto;
@@ -18,20 +21,58 @@ public class Estoque {
     private int qtdAtacado;
     private int setor;
     
-    public Estoque(){
+    public Produto(){
         
     }
     
-    public Estoque(int id)throws SQLException{
+    public Produto(int id)throws SQLException{
+        //Carrega um funcionario
         Connection con = Conexao.getConexao();
-        //Carrega um item do estoque
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        stmt = con.prepareStatement("SELECT 	* " +
+                                    "FROM 	estoque " +
+                                    "WHERE      matricula = " + id + ";");
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            this.id = rs.getInt("id");
+            this.codProduto = rs.getString("codProduto");
+            this.estabelecimento = rs.getInt("estbalecimento");
+            this.nome = rs.getString("nome");
+            this.qtdProduto = rs.getInt("qtdProduto");
+            this.precoVarejo = rs.getDouble("precoVarejo");
+            this.descontoAtacado = rs.getDouble("descontoAtacado");
+            this.qtdAtacado = rs.getInt("qtdAtacado");
+            this.setor = rs.getInt("setor");
+        }
+        Conexao.closeConnection(con, stmt, rs);
     }
     
     public ArrayList<Map> listaEstoque(Map<String, String> filtros)throws SQLException{
-        ArrayList<Map> lista = new ArrayList();
+        ArrayList<Map> estoque = new ArrayList();
+        Map<String, String> linha;
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String query = null;
         
+        query = "SELECT * FROM estoque "
+                + "WHERE 1 = 1 ";
         
-        return lista;
+        //FILTROS
+        if(filtros.containsKey("codProduto")) query = query + "AND codProduto = '"+ filtros.get("codProduto") +"' ";
+        if(filtros.containsKey("nome")) query = query + "AND nome = '"+ filtros.get("nome") +"' ";
+        if(filtros.containsKey("estabelecimento")) query = query + "AND estabelecimento = '"+ filtros.get("estabelecimento") +"' ";
+        
+        stmt = con.prepareStatement(query);
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            linha = new HashMap<String, String>();
+            linha.put("id", Integer.toString(rs.getInt("idEstabelecimento")));
+            estoque.add(linha);
+        }
+        return estoque;
     }
     
     public int inserirItem(){//Retorna um numero inteiro pra fazer o controle de erros no sql

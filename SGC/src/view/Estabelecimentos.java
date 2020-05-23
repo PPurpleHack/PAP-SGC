@@ -2,45 +2,44 @@ package view;
 
 //IMPORTS
 import control.Estabelecimento;
+import model.TableModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-public class Estabelecimentos extends javax.swing.JInternalFrame {
-
-    public Estabelecimentos() {
+public final class Estabelecimentos extends javax.swing.JInternalFrame {
+    
+    private final Main main;
+    private final TableModel tModel;
+    
+    public Estabelecimentos(Main main) {
+        //Carrega atributos
+        this.main = main;
+        
         initComponents();
         
+        //****Constroi tabela
+        String[] colunas = {"","ID", "Nome", "CNPJ", "Estado", "Cidade"};
+        this.tModel = new TableModel(colunas);
         //****Carrega tabela
         this.loadTable();
+        //****Seta modelo
+        tableEstabelecimento.setModel(this.tModel);
+        
     }
     
     public void loadTable(){
-        //Construção da tabela
-        ArrayList<Estabelecimento> estabList;
+        //Carregamento da tabela
         Estabelecimento estab = new Estabelecimento();
-        DefaultTableModel modelo = new DefaultTableModel(new Object[]{"","ID", "Nome", "CNPJ", "Estado", "Cidade"}, 0){
-            //Torna editavel ou não
-            @Override
-            public boolean isCellEditable(int row, int column){
-                return column == 0;
-            }
-            //Para o check box
-            @Override
-            public Class<?> getColumnClass(int columnIndex){
-                return getValueAt(0, columnIndex).getClass();
-            }
-        };
-        Map<String, String> filtros = new HashMap<String, String>();
-        
+        Map<String, String> filtros = new HashMap<>();
+        //Preencher os filtros
         try{
             ArrayList<Map> listaEstab = estab.listaEstabelecimentos(filtros);
-            listaEstab.forEach((var e) -> {
-                boolean checkBox = false;
-                modelo.addRow(new Object[]{
+            listaEstab.forEach((Map e) -> {
+                Estabelecimentos.this.tModel.addRow(new Object[]{
                     Boolean.FALSE,
                     e.get("id"),
                     e.get("nome"),
@@ -48,38 +47,28 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
                     e.get("estado"),
                     e.get("cidade")
                 });
-                //System.out.println(e);
             });
-            tableEstabelecimento.setModel(modelo);
         }catch(SQLException ex){
             System.out.println("Erro ao listar tabelas: "+ex);
         }
     }
     
-    public ArrayList<?> getAllSelected(){
-        ArrayList<String> selected = new ArrayList<String>();
-        for(int x = 0; x < tableEstabelecimento.getRowCount(); x++){
-            try{
-                if((Boolean)tableEstabelecimento.getValueAt(x, 0)) selected.add((String)tableEstabelecimento.getValueAt(x, 1));
-            }catch(Exception e){
-                System.out.println(e);
-            }
-        }
-        return selected;
+    public void addEstab(Estabelecimento e){
+        //Atualizar tabela quando for feito o cadastro de um novo estabelecimento
+        this.tModel.addRow(new Object[]{Boolean.FALSE,e.getId(),e.getNome(),e.getCnpj(),e.getEstado(),e.getCidade()});
     }
     
-    public int getSelected(){
-        int selected = -1;
-        for(int x = 0; x < tableEstabelecimento.getRowCount(); x++){
-            try{
-                if((Boolean)tableEstabelecimento.getValueAt(x, 0)){
-                    selected = Integer.parseInt((String)tableEstabelecimento.getValueAt(x, 1));
-                }
-            }catch(Exception e){
-                System.out.println(e);
-            }
-        }
-        return selected;
+    public void updateEstabInTheTable(Estabelecimento e){
+        //Atualizar tabela quando for atualizado um estabelecimento ta lista
+        Integer index = this.tModel.getIndexById(e.getId());
+        this.tModel.updateRow(index, new Object[]{
+            Boolean.FALSE,
+            Integer.toString(e.getId()),//Na hora de pegar o id é feito um casting pra String
+            e.getNome(),
+            e.getCnpj(),
+            e.getEstado(),
+            e.getCidade()
+        });
     }
     
     @SuppressWarnings("unchecked")
@@ -96,6 +85,7 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
         jComboBox2 = new javax.swing.JComboBox<>();
         bNovo = new javax.swing.JButton();
         bPesquisar = new javax.swing.JLabel();
+        bSetores = new javax.swing.JButton();
 
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -136,7 +126,7 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
                 bEditarActionPerformed(evt);
             }
         });
-        getContentPane().add(bEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 440, 150, -1));
+        getContentPane().add(bEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, 150, -1));
 
         bExcluir.setText("Excluir");
         bExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +134,7 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
                 bExcluirActionPerformed(evt);
             }
         });
-        getContentPane().add(bExcluir, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 440, 150, -1));
+        getContentPane().add(bExcluir, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 420, 150, 63));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 650, -1));
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -159,7 +149,7 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
                 bNovoActionPerformed(evt);
             }
         });
-        getContentPane().add(bNovo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 150, -1));
+        getContentPane().add(bNovo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 150, -1));
 
         bPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/procurar_24px.png"))); // NOI18N
         bPesquisar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -169,57 +159,37 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
         });
         getContentPane().add(bPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 35, -1, -1));
 
+        bSetores.setText("Setores");
+        bSetores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSetoresActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bSetores, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 420, 360, 63));
+
         setBounds(0, 0, 730, 520);
     }// </editor-fold>//GEN-END:initComponents
 
     private void bExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExcluirActionPerformed
-        /****
-        #####################
-        MUDAR AVISOS DE ERROS
-        #####################
-        ****/
-        Estabelecimento estab;
-        ArrayList<?> selected = this.getAllSelected();
-        boolean allExcluded = true;
-        for(int x = 0; x < selected.size(); x++){
-            try{
-                estab = new Estabelecimento(Integer.parseInt((String)selected.get(x)));
-                int error = estab.excluirEstabelecimento();
-                switch(error){                
-                    case 0:
-                        System.out.println("Error: "+0);
-                        allExcluded = false;
-                        break;
-                    case 1:
-                        System.out.println("Excluido com sucesso");
-                        break;
-                    case -1:
-                        System.out.println("Erro inexperado");
-                        allExcluded = false;
-                        break;
-                    default:
-                        System.out.println("Erro inexperado não mapeado");
-                        allExcluded = false;
-                        break;
-                          
-                }
-            }catch(SQLException ex){
-                allExcluded = false;
-                System.out.println(ex);
-            }
+        Estabelecimento estab = new Estabelecimento();
+        Integer rs;
+        ArrayList<Integer> selected = this.tModel.getIdSelected();
+        
+        rs = estab.excluirEstabelecimento(selected);
+        switch(rs){
+            case 1:
+                this.tModel.removeRow();
+                JOptionPane.showMessageDialog(rootPane,"The branchs has been excluded successfully","Success",JOptionPane.INFORMATION_MESSAGE);
+                break;
+            case 1451:
+                JOptionPane.showMessageDialog(rootPane,"It's not possible delete this branch, there are some informations depending this!","Error",JOptionPane.ERROR_MESSAGE);
+                break;
+            default:
+                JOptionPane.showMessageDialog(rootPane,"Sorry, something went wrong!","Error",JOptionPane.ERROR_MESSAGE);
+                System.out.println("Código de erro: "+rs);
+                break;
         }
-        this.loadTable();
-        if(allExcluded){
-            JOptionPane.showMessageDialog(rootPane,
-                                          "Dados excluidos com sucesos",
-                                          "Sucesso",
-                                          JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(rootPane,
-                                          "Não foi possível excluir todos os dados",
-                                          "ERRO",
-                                          JOptionPane.ERROR_MESSAGE);
-        }
+        this.tModel.setAllUnselect();
     }//GEN-LAST:event_bExcluirActionPerformed
 
     private void bPesquisarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bPesquisarMouseClicked
@@ -232,29 +202,31 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_bNovoActionPerformed
 
     private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
-        int id = this.getSelected();
-        switch(id){
-            case -1:
-                JOptionPane.showMessageDialog(rootPane,
-                                          "Selecione o registro resgistrado para poder edita-lo",
-                                          "Nenhum registro selecionado",
-                                          JOptionPane.INFORMATION_MESSAGE);
+        CadEstabelecimento cadEstab;
+        ArrayList<Integer> selected = this.tModel.getIdSelected();
+        switch(selected.size()){
+            case 0:
+                JOptionPane.showMessageDialog(rootPane,"Selecione um item para edição","",JOptionPane.INFORMATION_MESSAGE);
                 break;
-            default:
-                {
-                    try{
-                    CadEstabelecimento cadEstabelecimento = new CadEstabelecimento(this, id);
-                        cadEstabelecimento.setVisible(true);
-                    }catch(SQLException ex){
-                        JOptionPane.showMessageDialog(rootPane,
-                                          "Occoreu um erro ao tentar abrir a tela de edição. \nPor favor contate o superte!",
-                                          "ERRO",
-                                          JOptionPane.ERROR_MESSAGE);
-                    }
+            case 1:
+                try{
+                    cadEstab = new CadEstabelecimento(this, selected.get(0));
+                    cadEstab.setVisible(true);
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(rootPane,"Ocorreu um erro, por favor contate o superte tecnico.\n"+ex,"Erro",JOptionPane.ERROR_MESSAGE);
                 }
                 break;
+            default:
+                JOptionPane.showMessageDialog(rootPane,"Só é possível editar até 1 itens","",JOptionPane.INFORMATION_MESSAGE);
+                break;
         }
+        this.tModel.setAllUnselect();
     }//GEN-LAST:event_bEditarActionPerformed
+
+    private void bSetoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSetoresActionPerformed
+        this.main.fechaTelas();
+        this.main.getSetores().setVisible(true);
+    }//GEN-LAST:event_bSetoresActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -262,6 +234,7 @@ public class Estabelecimentos extends javax.swing.JInternalFrame {
     private javax.swing.JButton bExcluir;
     private javax.swing.JButton bNovo;
     private javax.swing.JLabel bPesquisar;
+    private javax.swing.JButton bSetores;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JInternalFrame jInternalFrame1;

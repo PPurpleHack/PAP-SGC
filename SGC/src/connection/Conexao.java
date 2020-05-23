@@ -22,11 +22,11 @@ public class Conexao {
             Class.forName(DRIVER);
             try{
                 con = DriverManager.getConnection(URL, USER, PASS);
-                System.out.println("Conectado com sucesso");
+                //System.out.println("Conectado com sucesso");
             
             } catch(SQLException ex){
                 //CASO TENHA ALGUM PROBLEMA NA CONEXAO
-                System.out.println("Erro ao conectar! " + ex);
+                //System.out.println("Erro ao conectar! " + ex);
             }
         } catch (ClassNotFoundException ex){
             //CASO O DRIVER ESTEJA ERRADO
@@ -54,5 +54,11 @@ public class Conexao {
         if(rs != null){
            rs.close();
        }
+    }
+    
+    public static void closeConnection(ResultSet rs) throws SQLException{
+        if(rs != null){
+            rs.close();
+        }
     }
 }

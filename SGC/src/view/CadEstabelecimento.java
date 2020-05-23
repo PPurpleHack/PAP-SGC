@@ -1,6 +1,8 @@
 package view;
 
 import control.Estabelecimento;
+import control.TelefoneEstabelecimento;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -17,8 +19,10 @@ public class CadEstabelecimento extends javax.swing.JFrame {
         
         this.setUndecorated(true);
         initComponents();
+        
     }
     
+    //QUANDO FOR CADASTRO
     public CadEstabelecimento(Estabelecimentos telaEstabelecimentos){
         this.errorOfValues = false;
         this.telaEstabelecimentos = telaEstabelecimentos;
@@ -33,13 +37,55 @@ public class CadEstabelecimento extends javax.swing.JFrame {
         this.telaEstabelecimentos = telaEstabelecimentos;
         this.estabelecimento = new Estabelecimento(id);
         
-        System.out.println(this.estabelecimento);
-        
         this.setUndecorated(true);
         initComponents();
+
+        this.carregaCampos();
     }
     
-   
+    private void carregaCampos(){
+        tNome.setText(this.estabelecimento.getNome());
+        tCnpj.setText(this.estabelecimento.getCnpj());
+        tCep.setText(this.estabelecimento.getCep());
+        tNumero.setText(Integer.toString(this.estabelecimento.getNumero()));
+        tCidade.setText(this.estabelecimento.getCidade());
+        tBairro.setText(this.estabelecimento.getBairro());
+        tEstado.setText(this.estabelecimento.getEstado());
+        tPais.setText(this.estabelecimento.getPais());
+        
+        ArrayList<TelefoneEstabelecimento> tel = this.estabelecimento.getTelefone();
+        
+        //Preenche os campos dos contatos
+        try{
+            tDDD1.setText(tel.get(0).getDdd());
+            tCont1.setText(tel.get(0).getNumero());
+            bDeleteCont1.setVisible(true);
+        }catch(Exception ex){
+            System.out.println("Ignorar: "+ex);
+        }
+        try{
+            tDDD2.setText(tel.get(1).getDdd());
+            tCont2.setText(tel.get(1).getNumero());
+            bDeleteCont2.setVisible(true);
+        }catch(Exception ex){
+            System.out.println("Ignorar: "+ex);
+        }
+        try{
+            tDDD3.setText(tel.get(2).getDdd());
+            tCont3.setText(tel.get(2).getNumero());
+            bDeleteCont3.setVisible(true);
+        }catch(Exception ex){
+            System.out.println("Ignorar: "+ex);
+        }
+        try{
+            tDDD4.setText(tel.get(3).getDdd());
+            tCont4.setText(tel.get(3).getNumero());
+            bDeleteCont4.setVisible(true);
+        }catch(Exception ex){
+            System.out.println("Ignorar: "+ex);
+        }
+    }
+            
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -74,6 +120,10 @@ public class CadEstabelecimento extends javax.swing.JFrame {
         tDDD4 = new javax.swing.JTextField();
         tCont3 = new javax.swing.JTextField();
         tCont4 = new javax.swing.JTextField();
+        bDeleteCont1 = new javax.swing.JButton();
+        bDeleteCont2 = new javax.swing.JButton();
+        bDeleteCont3 = new javax.swing.JButton();
+        bDeleteCont4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -152,6 +202,34 @@ public class CadEstabelecimento extends javax.swing.JFrame {
             }
         });
 
+        bDeleteCont1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
+        bDeleteCont1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDeleteCont1ActionPerformed(evt);
+            }
+        });
+
+        bDeleteCont2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
+        bDeleteCont2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDeleteCont2ActionPerformed(evt);
+            }
+        });
+
+        bDeleteCont3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
+        bDeleteCont3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDeleteCont3ActionPerformed(evt);
+            }
+        });
+
+        bDeleteCont4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
+        bDeleteCont4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDeleteCont4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -178,7 +256,7 @@ public class CadEstabelecimento extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel9))
-                                .addGap(0, 13, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(tCep, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -186,23 +264,23 @@ public class CadEstabelecimento extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(tNumero))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(tDDD1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tCont1))
+                        .addComponent(bSalvar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bCancelar))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(tDDD2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tCont2))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(tDDD3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tCont3))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(tDDD4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tCont4))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(tDDD4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tCont4))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(tDDD3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tCont3))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(tDDD2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tCont2))
                             .addComponent(jLabel3)
                             .addComponent(jLabel4)
                             .addComponent(jLabel1)
@@ -210,12 +288,17 @@ public class CadEstabelecimento extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addGap(96, 96, 96)
                                 .addComponent(jLabel6))
-                            .addComponent(jLabel15))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(bSalvar)
+                            .addComponent(jLabel15)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(tDDD1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tCont1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bCancelar)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bDeleteCont1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bDeleteCont2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bDeleteCont3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bDeleteCont4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -254,21 +337,29 @@ public class CadEstabelecimento extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel15)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tDDD1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tCont1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bDeleteCont1)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tDDD1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tCont1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tDDD2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tCont2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tDDD2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tCont2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bDeleteCont2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tDDD3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tCont3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tDDD3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tCont3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bDeleteCont3, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tDDD4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tCont4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tDDD4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tCont4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bDeleteCont4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(53, 53, 53)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bSalvar)
@@ -306,35 +397,116 @@ public class CadEstabelecimento extends javax.swing.JFrame {
     private void bSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSalvarActionPerformed
         //Processo de cadastro
         if(!this.errorOfValues){
-            try{
-                ArrayList<String> tel = new ArrayList();
-                Estabelecimento estab = new Estabelecimento();
-                estab.setNome(tNome.getText());
-                estab.setCnpj(tCnpj.getText());
-                estab.setCep(tCep.getText());
-                estab.setNumero(Integer.parseInt(tNumero.getText()));
-                estab.setCidade(tCidade.getText());
-                estab.setBairro(tBairro.getText());
-                estab.setEstado(tEstado.getText());
-                estab.setPais(tPais.getText());
-                if(!"".equals(tDDD1.getText()) && !"".equals(tCont1.getText())) tel.add(tDDD1.getText()+tCont1.getText());
-                if(!"".equals(tDDD2.getText()) && !"".equals(tCont2.getText())) tel.add(tDDD2.getText()+tCont2.getText());
-                if(!"".equals(tDDD3.getText()) && !"".equals(tCont3.getText())) tel.add(tDDD3.getText()+tCont3.getText());
-                if(!"".equals(tDDD4.getText()) && !"".equals(tCont4.getText())) tel.add(tDDD4.getText()+tCont4.getText());
-                estab.setTelefone(tel);
-                if(estab.cadastrarEstabalecimento()){
+            if(this.estabelecimento == null){
+                //CASO SEJA UM CADASTRO
+                try{
+                    ArrayList<TelefoneEstabelecimento> tel = new ArrayList();
+                    Estabelecimento estab = new Estabelecimento();
+                    estab.setNome(tNome.getText());
+                    estab.setCnpj(tCnpj.getText());
+                    estab.setCep(tCep.getText());
+                    estab.setNumero(Integer.parseInt(tNumero.getText()));
+                    estab.setCidade(tCidade.getText());
+                    estab.setBairro(tBairro.getText());
+                    estab.setEstado(tEstado.getText());
+                    estab.setPais(tPais.getText());
+                    if(!"".equals(tDDD1.getText()) && !"".equals(tCont1.getText())) tel.add(new TelefoneEstabelecimento(tDDD1.getText(), tCont1.getText(), false));
+                    if(!"".equals(tDDD2.getText()) && !"".equals(tCont2.getText())) tel.add(new TelefoneEstabelecimento(tDDD2.getText(), tCont2.getText(), false));
+                    if(!"".equals(tDDD3.getText()) && !"".equals(tCont3.getText())) tel.add(new TelefoneEstabelecimento(tDDD3.getText(),tCont3.getText(),false));
+                    if(!"".equals(tDDD4.getText()) && !"".equals(tCont4.getText()))tel.add(new TelefoneEstabelecimento(tDDD4.getText(),tCont4.getText(), false));
+                    
+                    estab.setTelefone(tel);
+                    if(estab.cadastrarEstabalecimento()){
+                        JOptionPane.showMessageDialog(rootPane,
+                                                      "Estabelecimento "+tNome.getText()+" cadastrado com sucesso",
+                                                      "Cadastrado com sucesso",
+                                                      JOptionPane.INFORMATION_MESSAGE);
+                        this.setVisible(false);
+                        this.telaEstabelecimentos.addEstab(estab);
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane,
+                                                      "Não foi possível cadastrar o estabelecimento "+tNome.getText()
+                                                      +". Por favor contate o suporte.",
+                                                      "Erro",
+                                                      JOptionPane.ERROR_MESSAGE);
+                    }
+                }catch(SQLException ex){
                     JOptionPane.showMessageDialog(rootPane,
-                                                  "Estabelecimento "+tNome.getText()+" cadastrado com sucesso",
-                                                  "Cadastrado com sucesso",
-                                                  JOptionPane.INFORMATION_MESSAGE);
-                    this.setVisible(false);
-                    this.telaEstabelecimentos.loadTable();
-                } else {
-
+                                                  "Não foi possível concluir o processamento. Por favor contate o suporte \n"+ex,
+                                                  "Erro",
+                                                  JOptionPane.ERROR_MESSAGE);
                 }
-            }catch(SQLException ex){
-                System.out.println("Erro sql: "+ ex);
-            }
+            } else {
+                
+                //CASO SEJA UMA EDIÇÃO
+                this.estabelecimento.setNome(tNome.getText());
+                this.estabelecimento.setCnpj(tCnpj.getText());
+                this.estabelecimento.setCep(tCep.getText());
+                this.estabelecimento.setNumero(Integer.parseInt(tNumero.getText()));
+                this.estabelecimento.setCidade(tCidade.getText());
+                this.estabelecimento.setBairro(tBairro.getText());
+                this.estabelecimento.setEstado(tEstado.getText());
+                this.estabelecimento.setPais(tPais.getText());
+                
+                ArrayList<TelefoneEstabelecimento> tel = this.estabelecimento.getTelefone();
+                if(!"".equals(tDDD1.getText()) && !"".equals(tCont1.getText())){
+                    try{
+                        tel.get(0).setDdd(tDDD1.getText());
+                        tel.get(0).setNumero(tCont1.getText());
+                        tel.get(0).setCelular(false);
+                    } catch(Exception ex){
+                        tel.add(new TelefoneEstabelecimento(tDDD1.getText(), tCont1.getText(), false));
+                    }
+                }
+                if(!"".equals(tDDD2.getText()) && !"".equals(tCont2.getText())){
+                    try{
+                        tel.get(1).setDdd(tDDD2.getText());
+                        tel.get(1).setNumero(tCont2.getText());
+                        tel.get(1).setCelular(false);
+                    } catch(Exception ex){
+                        tel.add(new TelefoneEstabelecimento(tDDD2.getText(), tCont2.getText(), false));
+                    }
+                }
+                if(!"".equals(tDDD3.getText()) && !"".equals(tCont3.getText())){
+                    try{
+                        tel.get(2).setDdd(tDDD3.getText());
+                        tel.get(2).setNumero(tCont3.getText());
+                        tel.get(2).setCelular(false);
+                    } catch(Exception ex){
+                        tel.add(new TelefoneEstabelecimento(tDDD3.getText(), tCont3.getText(), false));
+                    }
+                }
+                if(!"".equals(tDDD4.getText()) && !"".equals(tCont4.getText())){
+                    try{
+                        tel.get(3).setDdd(tDDD4.getText());
+                        tel.get(3).setNumero(tCont4.getText());
+                        tel.get(3).setCelular(false);
+                    } catch(Exception ex){
+                        tel.add(new TelefoneEstabelecimento(tDDD4.getText(), tCont4.getText(), false));
+                    }
+                }
+                try{
+                    if(this.estabelecimento.atualizarEstabelecimento()){
+                        JOptionPane.showMessageDialog(rootPane,
+                                                      "Estabelecimento "+tNome.getText()+" atualizado com sucesso",
+                                                      "Atualizado com sucesso",
+                                                      JOptionPane.INFORMATION_MESSAGE);
+                        this.setVisible(false);
+                        this.telaEstabelecimentos.updateEstabInTheTable(this.estabelecimento);
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane,
+                                                      "Não foi possível cadastrar o estabelecimento "+tNome.getText()
+                                                      +". Por favor contate o suporte.",
+                                                      "Erro",
+                                                      JOptionPane.ERROR_MESSAGE);
+                    }
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(rootPane,
+                                                  "Não foi possível concluir o processamento. Por favor contate o suporte \n"+ex,
+                                                  "Erro",
+                                                  JOptionPane.ERROR_MESSAGE);
+                }
+           }
         } else {
             JOptionPane.showMessageDialog(rootPane,
                                           "Preencha valores válidos para poder salvar",
@@ -416,6 +588,74 @@ public class CadEstabelecimento extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane,"Digite um ddd válido","Texto indevido",JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_tDDD4FocusLost
+
+    private void bDeleteCont1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteCont1ActionPerformed
+        
+        //Vai excluir o contato 1
+        try{
+            //LIMPA OBJETO
+            this.estabelecimento.getTelefone().get(0).setDdd(null);
+            this.estabelecimento.getTelefone().get(0).setNumero(null);
+            this.estabelecimento.getTelefone().get(0).setEstab(0);
+        }catch(Exception ex){
+            System.out.println("Erro: "+ex);
+        }
+        //LIMPA CAMPOS DE TEXTO
+        tDDD1.setText("");
+        tCont1.setText("");
+        
+    }//GEN-LAST:event_bDeleteCont1ActionPerformed
+
+    private void bDeleteCont2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteCont2ActionPerformed
+        
+        //Vai excluir o contato 2
+        try{
+            //LIMPA OBJETO
+            this.estabelecimento.getTelefone().get(1).setDdd(null);
+            this.estabelecimento.getTelefone().get(1).setNumero(null);
+            this.estabelecimento.getTelefone().get(1).setEstab(0);
+        }catch(Exception ex){
+            System.out.println("Erro: "+ex);
+        }
+        //LIMPA CAMPOS DE TEXTO
+        tDDD2.setText("");
+        tCont2.setText("");
+        
+    }//GEN-LAST:event_bDeleteCont2ActionPerformed
+
+    private void bDeleteCont3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteCont3ActionPerformed
+        
+        //Vai excluir o contato 3
+        try{
+            //LIMPA OBJETO
+            this.estabelecimento.getTelefone().get(2).setDdd(null);
+            this.estabelecimento.getTelefone().get(2).setNumero(null);
+            this.estabelecimento.getTelefone().get(2).setEstab(0);
+        }catch(Exception ex){
+            System.out.println("Erro: "+ex);
+        }
+        //LIMPA CAMPOS DE TEXTO
+        tDDD3.setText("");
+        tCont3.setText("");
+        
+    }//GEN-LAST:event_bDeleteCont3ActionPerformed
+
+    private void bDeleteCont4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDeleteCont4ActionPerformed
+        
+        //Vai excluir o contato 4
+        try{
+            //LIMPA OBJETO
+            this.estabelecimento.getTelefone().get(3).setDdd(null);
+            this.estabelecimento.getTelefone().get(3).setNumero(null);
+            this.estabelecimento.getTelefone().get(3).setEstab(0);
+        }catch(Exception ex){
+            System.out.println("Erro: "+ex);
+        }
+        //LIMPA CAMPOS DE TEXTO
+        tDDD4.setText("");
+        tCont4.setText("");
+        
+    }//GEN-LAST:event_bDeleteCont4ActionPerformed
     
     
     public static void main(String args[]) {
@@ -452,6 +692,10 @@ public class CadEstabelecimento extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCancelar;
+    private javax.swing.JButton bDeleteCont1;
+    private javax.swing.JButton bDeleteCont2;
+    private javax.swing.JButton bDeleteCont3;
+    private javax.swing.JButton bDeleteCont4;
     private javax.swing.JButton bSalvar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
