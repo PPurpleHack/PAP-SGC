@@ -242,7 +242,7 @@ public class Main extends javax.swing.JFrame {
         else if(Main.funcionarios.isVisible()) Main.funcionarios.setVisible(false);
         else if(Main.estabelecimentos.isVisible()) Main.estabelecimentos.setVisible(false);
         else if(Main.setores.isVisible()) Main.setores.setVisible(false);
-        else if(Main.funcoes.isVisible()) Main.setores.setVisible(false);
+        else if(Main.funcoes.isVisible()) Main.funcoes.setVisible(false);
         else System.out.println("Entrou em um nehuma tela visivel");
         
     }
@@ -295,6 +295,10 @@ public class Main extends javax.swing.JFrame {
     
     public static Funcoes getFuncoes(){
         return funcoes;
+    }
+    
+    public static Funcionarios getFuncionarios(){
+        return funcionarios;
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 import model.TableModel;
 
@@ -34,8 +35,8 @@ public class Funcoes extends javax.swing.JInternalFrame {
         Map<String, String> filtros = new HashMap<>();
         //Preencher os filtros
         try{
-            ArrayList<Map> listaEstab = funcao.lista(filtros);
-            listaEstab.forEach((Map e) -> {
+            ArrayList<Map> listaFuncoes = funcao.lista(filtros);
+            listaFuncoes.forEach((Map e) -> {
                 Funcoes.this.tModel.addRow(new Object[]{
                     Boolean.FALSE,
                     e.get("id"),
@@ -45,6 +46,21 @@ public class Funcoes extends javax.swing.JInternalFrame {
         }catch(SQLException ex){
             System.out.println("Erro ao listar tabelas: "+ex);
         }
+    }
+    
+    public void addFuncao(Funcao f){
+        //Atualizar tabela quando for feito o cadastro de um novo funcionario
+        this.tModel.addRow(new Object[]{Boolean.FALSE,f.getIdFuncao(),f.getDescricao()});
+    }
+    
+    public void updateFuncaoInTheTable(Funcao f){
+        //Atualizar tabela quando for atualizado um funcionario ta lista
+        Integer index = this.tModel.getIndexById(f.getIdFuncao());
+        this.tModel.updateRow(index, new Object[]{
+            Boolean.FALSE,
+            Integer.toString(f.getIdFuncao()),//Na hora de pegar a matricula tem que tornar ela um String
+            f.getDescricao()
+        });
     }
     
     /**
@@ -59,13 +75,13 @@ public class Funcoes extends javax.swing.JInternalFrame {
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableFuncionarios = new javax.swing.JTable();
-        bAddFuncionario = new javax.swing.JButton();
+        bAddFuncao = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         bPesquisar = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        bEditFunc = new javax.swing.JButton();
+        bEditar = new javax.swing.JButton();
         bExcluir = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        bVoltar = new javax.swing.JButton();
 
         setBorder(null);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -89,14 +105,14 @@ public class Funcoes extends javax.swing.JInternalFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 71, 690, 340));
 
-        bAddFuncionario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/new_24px.png"))); // NOI18N
-        bAddFuncionario.setText("Novo");
-        bAddFuncionario.addActionListener(new java.awt.event.ActionListener() {
+        bAddFuncao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/new_24px.png"))); // NOI18N
+        bAddFuncao.setText("Novo");
+        bAddFuncao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAddFuncionarioActionPerformed(evt);
+                bAddFuncaoActionPerformed(evt);
             }
         });
-        getContentPane().add(bAddFuncionario, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 150, 65));
+        getContentPane().add(bAddFuncao, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 150, 65));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 40, 610, -1));
 
         bPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/procurar_24px.png"))); // NOI18N
@@ -110,14 +126,14 @@ public class Funcoes extends javax.swing.JInternalFrame {
         jLabel1.setText("Nome:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 42, -1, -1));
 
-        bEditFunc.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_24px.png"))); // NOI18N
-        bEditFunc.setText("Editar");
-        bEditFunc.addActionListener(new java.awt.event.ActionListener() {
+        bEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_24px.png"))); // NOI18N
+        bEditar.setText("Editar");
+        bEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bEditFuncActionPerformed(evt);
+                bEditarActionPerformed(evt);
             }
         });
-        getContentPane().add(bEditFunc, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 420, 150, 65));
+        getContentPane().add(bEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 420, 150, 65));
 
         bExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
         bExcluir.setText("Excluir");
@@ -128,23 +144,28 @@ public class Funcoes extends javax.swing.JInternalFrame {
         });
         getContentPane().add(bExcluir, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 420, 150, 65));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/turnback_24px.png"))); // NOI18N
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
+        bVoltar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/turnback_24px.png"))); // NOI18N
+        bVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bVoltarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bVoltar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
 
         setBounds(0, 0, 730, 520);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bAddFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddFuncionarioActionPerformed
-        //CadFuncionario cadFunc = new CadFuncionario(this);
-        //cadFunc.setVisible(true);
-    }//GEN-LAST:event_bAddFuncionarioActionPerformed
+    private void bAddFuncaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddFuncaoActionPerformed
+        CadFuncao cadFuncao = new CadFuncao(this);
+        cadFuncao.setVisible(true);
+    }//GEN-LAST:event_bAddFuncaoActionPerformed
 
     private void bPesquisarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bPesquisarMouseClicked
         System.out.println("Vai relizar a pesquisa");
     }//GEN-LAST:event_bPesquisarMouseClicked
 
-    private void bEditFuncActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditFuncActionPerformed
-        /*CadFuncionario cadFunc;
+    private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
+        CadFuncao cadFuncao;
         ArrayList<Integer> selected = this.tModel.getIdSelected();
         switch(selected.size()){
             case 0:
@@ -152,8 +173,8 @@ public class Funcoes extends javax.swing.JInternalFrame {
             break;
             case 1:
             try{
-                cadFunc = new CadFuncionario(this, selected.get(0));
-                cadFunc.setVisible(true);
+                cadFuncao = new CadFuncao(this, selected.get(0));
+                cadFuncao.setVisible(true);
             }catch(SQLException ex){
                 JOptionPane.showMessageDialog(rootPane,"Ocorreu um erro, por favor contate o superte tecnico.\n"+ex,"Erro",JOptionPane.ERROR_MESSAGE);
             }
@@ -162,37 +183,45 @@ public class Funcoes extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane,"Só é possível editar até 1 itens","",JOptionPane.INFORMATION_MESSAGE);
             break;
         }
-        this.tModel.setAllUnselect();*/
-    }//GEN-LAST:event_bEditFuncActionPerformed
+        this.tModel.setAllUnselect();
+    }//GEN-LAST:event_bEditarActionPerformed
 
     private void bExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExcluirActionPerformed
-        /*Funcionario func = new Funcionario();
+        Funcao funcao = new Funcao();
         Integer rs;
         ArrayList<Integer> selected = this.tModel.getIdSelected();
 
-        rs = func.excluir(selected);
+        rs = funcao.excluir(selected);
         switch(rs){
             case 1:
             this.tModel.removeRow();
-            JOptionPane.showMessageDialog(rootPane,"Funcionario excluido com sucesso","Sucesso",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane,"Excluido com sucesso",
+                                        "Sucesso",JOptionPane.INFORMATION_MESSAGE);
             break;
             case 1451:
-            JOptionPane.showMessageDialog(rootPane,"Não foi possível excluir esse funcionario, existem informações dependeste dele no sistema","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane,"Há funcionarios dessa função, por isso não foi possível exclui-la",
+                                            "Error",JOptionPane.ERROR_MESSAGE);
             break;
             default:
-            JOptionPane.showMessageDialog(rootPane,"Algo de arrado aconteceu. \nCódigo de erro: "+rs,"Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(rootPane,"Algo de arrado aconteceu. \nCódigo de erro: "+rs,
+                                        "Error",JOptionPane.ERROR_MESSAGE);
             break;
         }
-        this.tModel.setAllUnselect();*/
+        this.tModel.setAllUnselect();
     }//GEN-LAST:event_bExcluirActionPerformed
+
+    private void bVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bVoltarActionPerformed
+        this.main.fechaTelas();
+        this.main.getFuncionarios().setVisible(true);
+    }//GEN-LAST:event_bVoltarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bAddFuncionario;
-    private javax.swing.JButton bEditFunc;
+    private javax.swing.JButton bAddFuncao;
+    private javax.swing.JButton bEditar;
     private javax.swing.JButton bExcluir;
     private javax.swing.JLabel bPesquisar;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton bVoltar;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;

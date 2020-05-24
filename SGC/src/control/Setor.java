@@ -13,15 +13,19 @@ import java.util.Map;
  *
  * @author Nicolas
  */
-public class Setor {
+public class Setor extends Control{
     //Atributos
     private int id;
     private String nome;
     private int estabelecimento;
     
-    public Setor(){}
+    public Setor(){
+        this.id = 0;
+        this.setClass();
+    }
     
     public Setor(int id) throws SQLException{
+        this.setClass();
         //Carrega um setor
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
@@ -39,34 +43,35 @@ public class Setor {
         Conexao.closeConnection(con, stmt, rs);
     }
     
-    public boolean cadastrarSetor() throws SQLException{
+    private void setClass(){
+        this.setClassName("setor");
+        this.setPrimaryKey("idSetor");
+    }
+    
+    public boolean salvar() throws SQLException{
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Integer rodou = null;
         String query = null;
         
-        query = "INSERT INTO setor(nome, estabelecimento)" +
+        query = "INSERT INTO setor(nome, estabelecimento) " +
                 "VALUES(?, ?)";
         stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
         stmt.setString(1, this.nome);
         stmt.setInt(2, this.estabelecimento);
-        rodou = stmt.executeUpdate();
-        if(rodou == 1){
+        if(stmt.executeUpdate() == 1){
             rs = stmt.getGeneratedKeys();
-            while(rs.next()){
-                this.id = rs.getInt(1);
-                return true;
-            }
+            if(rs.next()) this.id = rs.getInt(1);
+            Conexao.closeConnection(con, stmt, rs);
+            return true;
         }
         return false;
     }
     
-    public boolean atualizarSetor() throws SQLException{
+    public boolean update() throws SQLException{
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Integer rodou = null;
         String query = null;
         
         query = "UPDATE	setor " +
@@ -74,56 +79,39 @@ public class Setor {
                 "	estabelecimento = " + this.estabelecimento +" "+
                 "WHERE	idSetor = "+this.id+";";
         stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-        rodou = stmt.executeUpdate();
-        if(rodou == 1){
-            return true;
-        }
-        return false;
-    }
-    
-    public boolean excluirSetor() throws SQLException{
-        Connection con = Conexao.getConexao();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        Integer rodou = null;
-        String query = null;
-        
-        query = "DELETE FROM setor "
-              + "WHERE idSetor = "+this.id;
-        stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-        rodou = stmt.executeUpdate();
-        if(rodou == 1){
+        if(stmt.executeUpdate() == 1){
+            Conexao.closeConnection(con, stmt, rs);
             return true;
         }
         return false;
     }
     
     public ArrayList<Map> lista(Map<String, String> filtros) throws SQLException{
-        ArrayList<Map> estabelecimentos = new ArrayList();
+        ArrayList<Map> setores = new ArrayList();
         Map<String, String> linha;
-        Connection con = Conexao.getConexao();
-        PreparedStatement stmt = null;
         ResultSet rs = null;
         String query = null;
         
-        query = "SELECT * FROM setor "
+        query = "SELECT s.idSetor idSetor,"
+                + "     s.nome nome,"
+                + "     e.nome estabelecimento"
+                + " FROM setor s"
+                + " inner join estabelecimento e on s.estabelecimento = e.idEstabelecimento "
                 + "WHERE 1 = 1 ";
         
         //FILTROS
         if(filtros.containsKey("estabelecimento")) query = query + "AND estabelecimento = '"+ filtros.get("estabelecimento") +"' ";
-        if(filtros.containsKey("nome")) query = query + "AND nome = '"+ filtros.get("nome") +"' ";
         
-        stmt = con.prepareStatement(query);
-        rs = stmt.executeQuery();
+        rs = this.run(query);
         while(rs.next()){
             linha = new HashMap<String, String>();
             linha.put("id", Integer.toString(rs.getInt("idSetor")));
             linha.put("nome", rs.getString("nome"));
-            linha.put("cnpj", Integer.toString(rs.getInt("estabelecimento")));
-            estabelecimentos.add(linha);
+            linha.put("estabelecimento", rs.getString("estabelecimento"));
+            setores.add(linha);
         }
-        Conexao.closeConnection(con, stmt, rs);
-        return estabelecimentos;
+        Conexao.closeConnection(rs);
+        return setores;
     }
 
     @Override
@@ -149,6 +137,20 @@ public class Setor {
     }
 
     public int getEstabelecimento() {
+        return estabelecimento;
+    }
+    
+    public String getEstabelecimento(int id) throws SQLException{
+        String estabelecimento = "";
+        String query = "select e.nome estabelecimento from setor s "
+                + "inner join estabelecimento e on e.idEstabelecimento = s.estabelecimento "
+                + "where idSetor = "+id;
+        System.out.println(query);
+        ResultSet rs = this.run(query);
+        if(rs.next()){
+            estabelecimento = rs.getString("estabelecimento");
+        }
+        Conexao.closeConnection(rs);
         return estabelecimento;
     }
 

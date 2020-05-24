@@ -1,57 +1,66 @@
 package view;
 
-import control.Estabelecimento;
 import control.Setor;
+import model.TableModel;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 
 
 public class Setores extends javax.swing.JInternalFrame {
 
     private Main main;
+    private TableModel tModel;
     
     public Setores(Main main){
         initComponents();
         this.main = main;
         
-        //this.loadTable();
+        //****Constroi tabela
+        String[] colunas = {"", "id", "Nome", "Estabelecimento"};
+        this.tModel = new TableModel(colunas);
+        //****Carrega tabela
+        this.loadTable();
+        //****Seta modelo
+        tableSetores.setModel(this.tModel);
     }
     
     public void loadTable(){
-        //Construção da tabela
+        //Carregamento da tabela
         Setor setor = new Setor();
-        DefaultTableModel modelo = new DefaultTableModel(new Object[]{"","ID", "Nome", "Estabelecimento"}, 0){
-            //Torna editavel ou não
-            @Override
-            public boolean isCellEditable(int row, int column){
-                return column == 0;
-            }
-            //Para o check box
-            @Override
-            public Class<?> getColumnClass(int columnIndex){
-                return getValueAt(0, columnIndex).getClass();
-            }
-        };
         Map<String, String> filtros = new HashMap<>();
-        
+        //Preencher os filtros
         try{
-            ArrayList<Map> listaEstab = setor.lista(filtros);
-            listaEstab.forEach((var e) -> {
-                modelo.addRow(new Object[]{
+            ArrayList<Map> listaSetor = setor.lista(filtros);
+            listaSetor.forEach((Map e) -> {
+                Setores.this.tModel.addRow(new Object[]{
                     Boolean.FALSE,
                     e.get("id"),
                     e.get("nome"),
                     e.get("estabelecimento")
                 });
-                //System.out.println(e);
             });
-            tableSetor.setModel(modelo);
         }catch(SQLException ex){
             System.out.println("Erro ao listar tabelas: "+ex);
         }
+    }
+    
+    public void addInTheTable(Setor s)throws SQLException{
+        //Atualizar tabela quando for feito o cadastro de um novo setor
+        this.tModel.addRow(new Object[]{Boolean.FALSE,s.getId(),s.getNome(),s.getEstabelecimento(s.getId())});
+    }
+    
+    public void updateTable(Setor s)throws SQLException{
+        //Atualizar tabela quando for atualizado um funcionario ta lista
+        Integer index = this.tModel.getIndexById(s.getId());
+        this.tModel.updateRow(index, new Object[]{
+            Boolean.FALSE,
+            Integer.toString(s.getId()),//Na hora de pegar a matricula tem que tornar ela um String
+            s.getNome(),
+            s.getEstabelecimento(s.getId())
+        });
     }
     
     @SuppressWarnings("unchecked")
@@ -60,12 +69,13 @@ public class Setores extends javax.swing.JInternalFrame {
 
         jInternalFrame1 = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableSetor = new javax.swing.JTable();
+        tableSetores = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         bPesquisar = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        bNovo = new javax.swing.JButton();
+        bExcluir = new javax.swing.JButton();
         bTurnBack = new javax.swing.JButton();
+        bEditar = new javax.swing.JButton();
 
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -73,7 +83,7 @@ public class Setores extends javax.swing.JInternalFrame {
         jInternalFrame1.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(jInternalFrame1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        tableSetor.setModel(new javax.swing.table.DefaultTableModel(
+        tableSetores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null}
             },
@@ -96,7 +106,7 @@ public class Setores extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tableSetor);
+        jScrollPane1.setViewportView(tableSetores);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 71, 690, 330));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 650, -1));
@@ -109,13 +119,23 @@ public class Setores extends javax.swing.JInternalFrame {
         });
         getContentPane().add(bPesquisar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 35, -1, -1));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/new_24px.png"))); // NOI18N
-        jButton1.setText("Novo");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 690, -1));
+        bNovo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/new_24px.png"))); // NOI18N
+        bNovo.setText("Novo");
+        bNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bNovoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bNovo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 160, 70));
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_24px.png"))); // NOI18N
-        jButton2.setText("Editar");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 450, 690, -1));
+        bExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
+        bExcluir.setText("Excluir");
+        bExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bExcluirActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bExcluir, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 410, 160, 70));
 
         bTurnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/turnback_24px.png"))); // NOI18N
         bTurnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -124,6 +144,15 @@ public class Setores extends javax.swing.JInternalFrame {
             }
         });
         getContentPane().add(bTurnBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
+
+        bEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_24px.png"))); // NOI18N
+        bEditar.setText("Editar");
+        bEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bEditarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 410, 160, 70));
 
         setBounds(0, 0, 730, 520);
     }// </editor-fold>//GEN-END:initComponents
@@ -137,15 +166,56 @@ public class Setores extends javax.swing.JInternalFrame {
         this.main.getEstabelecimentos().setVisible(true);
     }//GEN-LAST:event_bTurnBackActionPerformed
 
+    private void bNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bNovoActionPerformed
+        new CadSetor(this).setVisible(true);
+    }//GEN-LAST:event_bNovoActionPerformed
+
+    private void bEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bEditarActionPerformed
+        ArrayList<Integer> selected = this.tModel.getIdSelected();
+        switch(selected.size()){
+            case 0:
+                JOptionPane.showMessageDialog(rootPane,"Selecione um item para edição","",JOptionPane.INFORMATION_MESSAGE);
+                break;
+            case 1:
+                try{
+                    new CadSetor(this, selected.get(0)).setVisible(true);
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(rootPane,"Ocorreu um erro, por favor contate o superte tecnico.\n"+ex,"Erro",JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+            default:
+                JOptionPane.showMessageDialog(rootPane,"Só é possível editar até 1 itens","",JOptionPane.INFORMATION_MESSAGE);
+                break;
+        }
+        this.tModel.setAllUnselect();
+    }//GEN-LAST:event_bEditarActionPerformed
+
+    private void bExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExcluirActionPerformed
+        int rs = new Setor().delete(this.tModel.getIdSelected());
+        switch(rs){
+            case 1:
+                this.tModel.removeRow();
+                JOptionPane.showMessageDialog(rootPane,"Excluido com sucesso","Sucesso",JOptionPane.INFORMATION_MESSAGE);
+                break;
+            case 1451:
+                JOptionPane.showMessageDialog(rootPane,"Não foi possível excluir esse setor, existem informações dependeste dele no sistema","Error",JOptionPane.ERROR_MESSAGE);
+                break;
+            default:
+                JOptionPane.showMessageDialog(rootPane,"Algo de arrado aconteceu. \nCódigo de erro: "+rs,"Error",JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+    }//GEN-LAST:event_bExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bEditar;
+    private javax.swing.JButton bExcluir;
+    private javax.swing.JButton bNovo;
     private javax.swing.JLabel bPesquisar;
     private javax.swing.JButton bTurnBack;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTable tableSetor;
+    private javax.swing.JTable tableSetores;
     // End of variables declaration//GEN-END:variables
 }

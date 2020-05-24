@@ -1,6 +1,9 @@
 package control;
 
 import connection.Conexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.ResultSet;
@@ -33,6 +36,44 @@ public class Funcao extends Control{
     private void setClass(){
         this.setClassName("funcao");
         this.setPrimaryKey("idFuncao");
+    }
+    
+    public boolean save() throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        ResultSet rs;
+        String query;
+        
+        query = "INSERT INTO funcao(descricao) " +
+                "VALUES(?);";
+        stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, this.descricao);
+        
+        if(stmt.executeUpdate() == 1){
+            //Pega o id gerado
+            rs = stmt.getGeneratedKeys();
+            if(rs.next()) this.idFuncao = rs.getInt(1);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean update() throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        ResultSet rs;
+        String query;
+        
+        query = "UPDATE funcao "
+                + "set descricao = '"+this.descricao+"' "
+                + "where idFuncao = "+this.idFuncao;
+        stmt = con.prepareStatement(query);
+        if(stmt.executeUpdate() > 0) return true; 
+        return false;
+    }
+    
+    public int excluir(ArrayList<Integer> ids){
+        return this.delete(ids);
     }
     
     public ArrayList<ArrayList> listaFuncaoComboBox()throws SQLException{

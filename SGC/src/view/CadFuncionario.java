@@ -114,14 +114,12 @@ public class CadFuncionario extends javax.swing.JFrame {
         //PREENCHE OS CAMPOS QUE SÃO EM COMBO BOX
         try{
             Funcao funcao = new Funcao(this.funcionario.getFuncao());
-            System.out.println("Chegou aqui funcao");
             cbFuncao.getModel().setSelectedItem(new ComboBox(funcao.getIdFuncao(), funcao.getDescricao()));
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(rootPane, ex, "ERRO", JOptionPane.ERROR_MESSAGE);
         }
         try{
             Estabelecimento estab = new Estabelecimento(this.funcionario.getEstabelecimento());
-            System.out.println("Chegou aqui estabelecimento");
             cbEstabelecimento.getModel().setSelectedItem(new ComboBox(estab.getId(), estab.getNome()));
             
         }catch(SQLException ex){
@@ -462,12 +460,12 @@ public class CadFuncionario extends javax.swing.JFrame {
                                 .addComponent(jLabel6)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel16)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jLabel9)
-                                    .addGap(0, 9, Short.MAX_VALUE))
-                                .addComponent(tEstado))
+                            .addComponent(tEstado)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel9))
+                                .addGap(0, 5, Short.MAX_VALUE))
                             .addComponent(tNumero, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
