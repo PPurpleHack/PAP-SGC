@@ -91,7 +91,7 @@ public class Funcionario extends Control{
     public boolean cadastrarFuncionario() throws SQLException{
         Connection con = Conexao.getConexao();
         PreparedStatement stmt;
-        ResultSet rs;
+        ResultSet rs = null;
         String query;
         
         query = "INSERT INTO funcionario(nome, sobrenome, cep, numero, cidade, bairro, estado, pais, email, funcao, estabelecimento, cpf) " +
@@ -123,6 +123,7 @@ public class Funcionario extends Control{
             }
             return true;
         }
+        Conexao.closeConnection(con, stmt, rs);
         return false;
     }
     
@@ -172,32 +173,43 @@ public class Funcionario extends Control{
     }
     
     public boolean cadastrarConta(String senha) throws SQLException{
+        //VERIFICA SE O FUNCIONARIO QUE ESTA TENDO CADASTRAR UMA CONTA JÁ TEM UMA CONTA
+        if(this.verificaSeFuncionarioTemConta()) return false;
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Integer rodou = null;
         String query;
         
         query = "UPDATE 	funcionario " +
                 "SET		login = matricula, " +
-                "		senha = MD5('123') " +
+                "		senha = MD5('"+senha+"') " +
                 "WHERE		matricula = ?;";
         stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
         stmt.setInt(1, this.matricula);
-        rodou = stmt.executeUpdate();
-        if(rodou == 1){
-            return true;
-        }
+        if(stmt.executeUpdate() == 1) return true;
         return false;
+    }
+    
+    private boolean verificaSeFuncionarioTemConta()throws SQLException{
+        //VERIFICA SE O FUNCIONARIO JÁ TEM UMA CONTA
+        String query = "select IFNULL(login, 0)\"login\" from funcionario where matricula = "+this.matricula;
+        ResultSet rs = this.run(query);
+        while(rs.next()){
+            if(rs.getInt("login") == 0){
+                Conexao.closeConnection(rs);
+                return false;
+            }
+        }
+        Conexao.closeConnection(rs);
+        return true;
     }
     
     public boolean logar(String login, String senha) throws SQLException{
         Connection con = Conexao.getConexao();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        
-        stmt = con.prepareStatement("SELECT 	matricula," +
-                                    "		nome" +
+        String query = "SELECT 	matricula," +
+                                    "		nome," +
                                     "		sobrenome," +
                                     "		cpf," +
                                     "		numero," +
@@ -211,7 +223,8 @@ public class Funcionario extends Control{
                                     "		estabelecimento " +
                                     "FROM 	funcionario " +
                                     "WHERE      login = " + login + " " +
-                                    "AND        senha = md5('" + senha + "')");
+                                    "AND        senha = md5('" + senha + "')";
+        stmt = con.prepareStatement(query);
         rs = stmt.executeQuery();
         if(rs.next()){
             this.matricula = rs.getInt("matricula");

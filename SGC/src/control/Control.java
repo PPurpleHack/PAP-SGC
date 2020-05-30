@@ -30,7 +30,7 @@ public class Control {
         ResultSet rs = null;
         String query;
         
-        stmt = con.prepareStatement("select * from `"+this.className+"` where `"+this.primaryKey+"` = "+id);
+        stmt = con.prepareStatement("select * from `"+this.className+"` where `"+this.primaryKey+"` = '"+id+"'");
         rs = stmt.executeQuery();
         Conexao.closeConnection(con, stmt);
         return rs;
@@ -65,7 +65,7 @@ public class Control {
         ResultSet rs = null;
         
         try{
-            stmt = con.prepareStatement(query);
+            stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             rs = stmt.executeQuery();
             Conexao.closeConnection(con, stmt);
         } catch(Exception ex){

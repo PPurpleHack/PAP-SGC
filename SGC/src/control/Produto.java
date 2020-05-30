@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Produto {
+public class Produto extends Control{
     
     private int id;
     private String codProduto;
@@ -22,23 +22,22 @@ public class Produto {
     private int setor;
     
     public Produto(){
-        
+        this.setClassName("estoque");
+        this.setPrimaryKey("idEstoque");
     }
     
     public Produto(int id)throws SQLException{
-        //Carrega um funcionario
-        Connection con = Conexao.getConexao();
-        PreparedStatement stmt = null;
+        
+        this.setClassName("estoque");
+        this.setPrimaryKey("idEstoque");
+
         ResultSet rs = null;
         
-        stmt = con.prepareStatement("SELECT 	* " +
-                                    "FROM 	estoque " +
-                                    "WHERE      matricula = " + id + ";");
-        rs = stmt.executeQuery();
+        rs = this.load(id);
         while(rs.next()){
-            this.id = rs.getInt("id");
+            this.id = rs.getInt("idEstoque");
             this.codProduto = rs.getString("codProduto");
-            this.estabelecimento = rs.getInt("estbalecimento");
+            this.estabelecimento = rs.getInt("estabelecimento");
             this.nome = rs.getString("nome");
             this.qtdProduto = rs.getInt("qtdProduto");
             this.precoVarejo = rs.getDouble("precoVarejo");
@@ -46,46 +45,95 @@ public class Produto {
             this.qtdAtacado = rs.getInt("qtdAtacado");
             this.setor = rs.getInt("setor");
         }
-        Conexao.closeConnection(con, stmt, rs);
+        Conexao.closeConnection(rs);
+    }
+    
+    public void save()throws SQLException{//INSERE UM NOVO PRODUTO
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        ResultSet rs = null;
+        String query;
+        
+        query = "insert into estoque(codProduto, estabelecimento, nome, qtdProduto, precoVarejo, descontoAtacado, qtdAtacado, setor) " 
+               +"VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, this.codProduto);
+        stmt.setInt(2, this.estabelecimento);
+        stmt.setString(3, this.nome);
+        stmt.setInt(4, 0);
+        stmt.setDouble(5, this.precoVarejo);
+        stmt.setDouble(6, this.descontoAtacado);
+        stmt.setInt(7, this.qtdAtacado);
+        stmt.setInt(8, this.setor);
+        stmt.execute();
+        rs = stmt.getGeneratedKeys();
+        if(rs.next()) this.id = rs.getInt(1);
+    }
+    
+    public int update(){//Retorna um numero inteiro pra fazer o controle de erros no sql
+        return 1;
+    }
+    
+    public void updateQuantidade(){
+        ResultSet rs;
+        String query;
+        query = "UPDATE estoque " +
+                "SET	qtdProduto = "+this.qtdProduto+" "+
+                "WHERE 	idEstoque = "+this.id;
+        this.run(query);
     }
     
     public ArrayList<Map> listaEstoque(Map<String, String> filtros)throws SQLException{
         ArrayList<Map> estoque = new ArrayList();
         Map<String, String> linha;
-        Connection con = Conexao.getConexao();
-        PreparedStatement stmt = null;
         ResultSet rs = null;
         String query = null;
         
-        query = "SELECT * FROM estoque "
-                + "WHERE 1 = 1 ";
-        
+        query = "SELECT *, "
+                + "ROUND(precoVarejo - (precoVarejo * (descontoAtacado/100)), 2) \"precoComDesconto\" FROM estoque "
+                + "WHERE 1 = 1";
+        //System.out.println(query);
         //FILTROS
         if(filtros.containsKey("codProduto")) query = query + "AND codProduto = '"+ filtros.get("codProduto") +"' ";
         if(filtros.containsKey("nome")) query = query + "AND nome = '"+ filtros.get("nome") +"' ";
         if(filtros.containsKey("estabelecimento")) query = query + "AND estabelecimento = '"+ filtros.get("estabelecimento") +"' ";
         
-        stmt = con.prepareStatement(query);
-        rs = stmt.executeQuery();
+        rs = this.run(query);
         while(rs.next()){
             linha = new HashMap<String, String>();
-            linha.put("id", Integer.toString(rs.getInt("idEstabelecimento")));
+            linha.put("id", Integer.toString(rs.getInt("idEstoque")));
+            linha.put("codigo", rs.getString("codProduto"));
+            linha.put("estabelecimento", Integer.toString(rs.getInt("estabelecimento")));
+            linha.put("nome", rs.getString("nome"));
+            linha.put("quantidade", Integer.toString(rs.getInt("qtdProduto")));
+            linha.put("preco", Double.toString(rs.getDouble("precoVarejo")));
+            linha.put("precoComDesconto", Double.toString(rs.getDouble("precoComDesconto")));
+            linha.put("QuantidadePraDesconto", Integer.toString(rs.getInt("qtdAtacado")));
+            linha.put("setor", Integer.toString(rs.getInt("setor")));
             estoque.add(linha);
         }
         return estoque;
     }
     
-    public int inserirItem(){//Retorna um numero inteiro pra fazer o controle de erros no sql
+    public int checkProduto()throws SQLException{
+        ResultSet rs = null;
+        String query;
         
-        return 1;//Apagar dpois
+        query = "SELECT idEstoque, COUNT(idEstoque)\"tem\" FROM estoque "
+              + "WHERE codProduto = '"+this.codProduto+"' AND estabelecimento = "+this.estabelecimento+";";
+        
+        rs = this.run(query);
+        while(rs.next()){
+            if(rs.getInt("tem") == 1){
+                Conexao.closeConnection(rs);
+                return rs.getInt("idEstoque");
+            }
+        }
+        Conexao.closeConnection(rs);
+        return 0;
     }
     
     public int excluirItem(){//Retorna um numero inteiro pra fazer o controle de erros no sql
-        
-        return 1;
-    }
-    
-    public int editarItem(){//Retorna um numero inteiro pra fazer o controle de erros no sql
         
         return 1;
     }
@@ -162,5 +210,9 @@ public class Produto {
     public void setSetor(int setor) {
         this.setor = setor;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Produto{" + "id=" + id + ", codProduto=" + codProduto + ", estabelecimento=" + estabelecimento + ", nome=" + nome + ", qtdProduto=" + qtdProduto + ", precoVarejo=" + precoVarejo + ", descontoAtacado=" + descontoAtacado + ", qtdAtacado=" + qtdAtacado + ", setor=" + setor + '}';
+    }
 }
