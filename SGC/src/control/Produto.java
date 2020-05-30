@@ -1,5 +1,6 @@
 package control;
 
+import view.CadProduto;
 import java.sql.Connection;
 import java.sql.SQLException;
 import connection.Conexao;
@@ -54,24 +55,62 @@ public class Produto extends Control{
         ResultSet rs = null;
         String query;
         
-        query = "insert into estoque(codProduto, estabelecimento, nome, qtdProduto, precoVarejo, descontoAtacado, qtdAtacado, setor) " 
-               +"VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+        query = "insert into estoque(codProduto, estabelecimento, nome, qtdProduto, precoVarejo, descontoAtacado, qtdAtacado, setor, situacao) " 
+               +"VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
         stmt.setString(1, this.codProduto);
         stmt.setInt(2, this.estabelecimento);
         stmt.setString(3, this.nome);
-        stmt.setInt(4, 0);
+        stmt.setInt(4, this.qtdProduto);
         stmt.setDouble(5, this.precoVarejo);
         stmt.setDouble(6, this.descontoAtacado);
         stmt.setInt(7, this.qtdAtacado);
         stmt.setInt(8, this.setor);
+        stmt.setString(9, "ATIVO");
         stmt.execute();
         rs = stmt.getGeneratedKeys();
         if(rs.next()) this.id = rs.getInt(1);
     }
     
-    public int update(){//Retorna um numero inteiro pra fazer o controle de erros no sql
-        return 1;
+    public boolean update()throws SQLException{//Retorna um numero inteiro pra fazer o controle de erros no sql
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        String query;
+        
+        query = "update estoque "
+              + "set    codProduto = '"+this.codProduto+"', "
+              + "       estabelecimento = "+this.estabelecimento+","
+                + "     nome = '"+this.nome+"',"
+                + "     qtdProduto = '"+this.qtdProduto+"',"
+                + "     precoVarejo = '"+this.precoVarejo+"',"
+                + "     descontoAtacado = '"+this.descontoAtacado+"',"
+                + "     qtdAtacado = '"+this.qtdAtacado+"',"
+                + "     setor = "+this.setor+" "
+              + "where  idEstoque = "+this.id;
+        stmt = con.prepareStatement(query);
+        if(stmt.executeUpdate() == 1){
+            Conexao.closeConnection(con, stmt);
+            return true;
+        }
+        Conexao.closeConnection(con, stmt);
+        return false;
+    }
+
+    public ArrayList<Integer> deleteProduto(ArrayList<Integer> ids){
+        ArrayList<Integer> cont = new ArrayList();
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        String query;
+        for(int id: ids){
+            try{
+                query = "update estoque set situacao = 'EXCLUIDO' where idEstoque = "+id+" and qtdProduto = 0";
+                stmt = con.prepareStatement(query);
+                if(stmt.executeUpdate() > 0){
+                    cont.add(Integer.valueOf(id));
+                }
+            }catch(SQLException ex){}
+        }
+        return cont;
     }
     
     public void updateQuantidade(){
@@ -91,7 +130,7 @@ public class Produto extends Control{
         
         query = "SELECT *, "
                 + "ROUND(precoVarejo - (precoVarejo * (descontoAtacado/100)), 2) \"precoComDesconto\" FROM estoque "
-                + "WHERE 1 = 1";
+                + "WHERE 1 = 1 AND ifnull(situacao, 'ATIVO') <> 'EXCLUIDO' ";
         //System.out.println(query);
         //FILTROS
         if(filtros.containsKey("codProduto")) query = query + "AND codProduto = '"+ filtros.get("codProduto") +"' ";
@@ -115,27 +154,27 @@ public class Produto extends Control{
         return estoque;
     }
     
-    public int checkProduto()throws SQLException{
+    public int checkProduto(CadProduto cadProduto)throws SQLException{
         ResultSet rs = null;
         String query;
+        int retorno = 0;
         
-        query = "SELECT idEstoque, COUNT(idEstoque)\"tem\" FROM estoque "
+        query = "SELECT idEstoque, COUNT(idEstoque)\"tem\", ifnull(situacao, 'ATIVO')\"situacao\" FROM estoque "
               + "WHERE codProduto = '"+this.codProduto+"' AND estabelecimento = "+this.estabelecimento+";";
         
         rs = this.run(query);
         while(rs.next()){
             if(rs.getInt("tem") == 1){
-                Conexao.closeConnection(rs);
-                return rs.getInt("idEstoque");
+                retorno = rs.getInt("idEstoque");
+                if(rs.getString("situacao").equals("EXCLUIDO")){
+                    query = "update estoque set situacao = 'ATIVO' where idEstoque = "+retorno;
+                    this.run(query);
+                    cadProduto.setStatusProduto("newProduto");
+                }
             }
         }
         Conexao.closeConnection(rs);
-        return 0;
-    }
-    
-    public int excluirItem(){//Retorna um numero inteiro pra fazer o controle de erros no sql
-        
-        return 1;
+        return retorno;
     }
     
     //Getters and Setters

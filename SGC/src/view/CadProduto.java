@@ -301,7 +301,7 @@ public class CadProduto extends javax.swing.JFrame {
                 Produto produto = new Produto();
                 produto.setEstabelecimento(estabelecimento);
                 produto.setCodProduto(tCodigo.getText());
-                int estoque = produto.checkProduto();
+                int estoque = produto.checkProduto(this);
                 switch(estoque){
                     case 0:
                         //AINDA NÃO EXISTE REGISTRO DESSE PRODUTO NESSE ESTABELECIMENTO
@@ -520,7 +520,6 @@ public class CadProduto extends javax.swing.JFrame {
                         if(this.lote.save() == 1){
                             JOptionPane.showMessageDialog(rootPane, "Lote "+this.lote.getCodLote()+" registrado com sucesso", "SUCESSO", JOptionPane.INFORMATION_MESSAGE);
                             this.setVisible(false);
-                            System.out.println("print lote: "+this.lote);
                             switch(this.statusProduto){
                                 case "newProduto":
                                     this.estoque.addProdutoInTheTable(new Produto(this.lote.getEstoque()));
@@ -567,4 +566,8 @@ public class CadProduto extends javax.swing.JFrame {
     private javax.swing.JTextField tQuantidade;
     private javax.swing.JTextField tValorPago;
     // End of variables declaration//GEN-END:variables
+
+    public void setStatusProduto(String statusProduto){
+        this.statusProduto = statusProduto;
+    }
 }

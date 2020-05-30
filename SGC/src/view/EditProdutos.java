@@ -79,18 +79,11 @@ public class EditProdutos extends javax.swing.JFrame {
         tQtdDesconto.setText(Integer.toString(this.produto.getQtdAtacado()));
         
         Estabelecimento estabelecimento = new Estabelecimento(this.produto.getEstabelecimento());
-        cbEstabelecimento.getModel().setSelectedItem(new ComboBox(8, "eletro"));
-        
-        /*Funcao funcao = new Funcao(this.funcionario.getFuncao());
-        cbFuncao.getModel().setSelectedItem(new ComboBox(funcao.getIdFuncao(), funcao.getDescricao()));
-        
-        Estabelecimento estabelecimento = new Estabelecimento(this.produto.getEstabelecimento());
         System.out.println(estabelecimento);
-        cbEstabelecimento.getModel().setSelectedItem(new ComboBox(estabelecimento.getId(), estabelecimento.getNome()));*/
-        
+        cbEstabelecimento.getModel().setSelectedItem(new ComboBox(estabelecimento.getId(), estabelecimento.getNome()));
         this.loadComboBoxSetor();
         Setor setor = new Setor(this.produto.getSetor());
-        cbEstabelecimento.getModel().setSelectedItem(new ComboBox(setor.getId(), setor.getNome()));
+        cbSetor.getModel().setSelectedItem(new ComboBox(setor.getId(), setor.getNome()));
     }
     
     @SuppressWarnings("unchecked")
@@ -115,7 +108,7 @@ public class EditProdutos extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         cbSetor = new javax.swing.JComboBox<>(this.createComboBoxSetor());
-        jButton1 = new javax.swing.JButton();
+        bSalvar = new javax.swing.JButton();
         bCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -133,6 +126,11 @@ public class EditProdutos extends javax.swing.JFrame {
         tCodigo.setEditable(false);
         tCodigo.setBackground(new java.awt.Color(204, 204, 204));
 
+        tNome.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tNomeFocusLost(evt);
+            }
+        });
         tNome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tNomeActionPerformed(evt);
@@ -153,6 +151,11 @@ public class EditProdutos extends javax.swing.JFrame {
 
         jLabel6.setText("Preço:");
 
+        tPreco.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tPrecoFocusLost(evt);
+            }
+        });
         tPreco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tPrecoActionPerformed(evt);
@@ -161,6 +164,11 @@ public class EditProdutos extends javax.swing.JFrame {
 
         jLabel7.setText("Quantidade para desconto:");
 
+        tDesconto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tDescontoFocusLost(evt);
+            }
+        });
         tDesconto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tDescontoActionPerformed(evt);
@@ -169,18 +177,36 @@ public class EditProdutos extends javax.swing.JFrame {
 
         jLabel8.setText("Desconto(%):");
 
+        tQtdDesconto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                tQtdDescontoFocusLost(evt);
+            }
+        });
         tQtdDesconto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tQtdDescontoActionPerformed(evt);
             }
         });
 
+        cbEstabelecimento.setEnabled(false);
+
         jLabel9.setText("Setor:");
 
         jLabel10.setText("Estabelecimento:");
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/save_16px.png"))); // NOI18N
-        jButton1.setText("Salvar");
+        cbSetor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cbSetorFocusLost(evt);
+            }
+        });
+
+        bSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/save_16px.png"))); // NOI18N
+        bSalvar.setText("Salvar");
+        bSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSalvarActionPerformed(evt);
+            }
+        });
 
         bCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/close_16px.png"))); // NOI18N
         bCancelar.setText("Cancelar");
@@ -230,7 +256,7 @@ public class EditProdutos extends javax.swing.JFrame {
                                     .addComponent(jLabel8))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(bSalvar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bCancelar)))
                 .addContainerGap())
@@ -271,7 +297,7 @@ public class EditProdutos extends javax.swing.JFrame {
                     .addComponent(cbSetor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(bSalvar)
                     .addComponent(bCancelar))
                 .addContainerGap())
         );
@@ -306,11 +332,73 @@ public class EditProdutos extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_bCancelarActionPerformed
 
+    private void bSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSalvarActionPerformed
+        try{
+            if(produto.getNome().equals("")){
+                JOptionPane.showMessageDialog(rootPane, "Nome não pode estar vazio", "Nome não informado", JOptionPane.WARNING_MESSAGE);
+            }else if(produto.getPrecoVarejo().equals("")){
+                JOptionPane.showMessageDialog(rootPane, "Preço não pode estar vazio", "Preço não informado", JOptionPane.WARNING_MESSAGE);
+            }else{
+                if(produto.update()){
+                    JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso", "SUCESSO", JOptionPane.INFORMATION_MESSAGE);
+                    this.setVisible(false);
+                    this.estoque.updateTable(produto);
+                }else{
+                    JOptionPane.showMessageDialog(rootPane, "Não foi possível concluir o processo", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(rootPane, ex, "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_bSalvarActionPerformed
+
+    private void tNomeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tNomeFocusLost
+        this.produto.setNome(tNome.getText());
+    }//GEN-LAST:event_tNomeFocusLost
+
+    private void tPrecoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tPrecoFocusLost
+        try{
+            if(!tPreco.getText().equals("")){
+                this.produto.setPrecoVarejo(Double.parseDouble(tPreco.getText()));
+            }
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_tPrecoFocusLost
+
+    private void tDescontoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tDescontoFocusLost
+        try{
+            if(!tDesconto.getText().equals("")){
+                this.produto.setDescontoAtacado(Double.parseDouble(tDesconto.getText()));
+            }else{
+                this.produto.setDescontoAtacado(0.00);
+            }
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_tDescontoFocusLost
+
+    private void tQtdDescontoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tQtdDescontoFocusLost
+        try{
+            if(!tQtdDesconto.getText().equals("")){
+                this.produto.setQtdAtacado(Integer.parseInt(tQtdDesconto.getText()));
+            }else{
+                this.produto.setQtdAtacado(0);
+            }
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_tQtdDescontoFocusLost
+
+    private void cbSetorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cbSetorFocusLost
+        this.produto.setSetor(((ComboBox)cbSetor.getSelectedItem()).getIndex());
+    }//GEN-LAST:event_cbSetorFocusLost
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCancelar;
+    private javax.swing.JButton bSalvar;
     private javax.swing.JComboBox<String> cbEstabelecimento;
     private javax.swing.JComboBox<String> cbSetor;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

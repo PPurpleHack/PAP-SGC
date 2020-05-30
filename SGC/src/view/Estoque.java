@@ -64,7 +64,7 @@ public class Estoque extends javax.swing.JInternalFrame {
                                         Integer.toString(p.getSetor()),
                                         Integer.toString(p.getQtdProduto()),
                                         Double.toString(p.getPrecoVarejo()),
-                                        Double.toString(p.getPrecoVarejo() + (p.getPrecoVarejo() * (p.getDescontoAtacado()/100))),
+                                        Double.toString(p.getPrecoVarejo() - (p.getPrecoVarejo() * (p.getDescontoAtacado()/100))),
                                         Integer.toString(p.getQtdAtacado())});
     }
     
@@ -82,7 +82,7 @@ public class Estoque extends javax.swing.JInternalFrame {
             Integer.toString(p.getSetor()),
             Integer.toString(p.getQtdProduto()),
             Double.toString(p.getPrecoVarejo()),
-            Double.toString(p.getPrecoVarejo() + (p.getPrecoVarejo() * (p.getDescontoAtacado()/100))),
+            Double.toString(p.getPrecoVarejo() - (p.getPrecoVarejo() * (p.getDescontoAtacado()/100))),
             Integer.toString(p.getQtdAtacado())
         });
     }
@@ -127,6 +127,11 @@ public class Estoque extends javax.swing.JInternalFrame {
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 71, 690, 340));
 
         bExcluir.setText("Excluir");
+        bExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bExcluirActionPerformed(evt);
+            }
+        });
         getContentPane().add(bExcluir, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 460, 140, 30));
         getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 650, -1));
 
@@ -199,6 +204,20 @@ public class Estoque extends javax.swing.JInternalFrame {
         }
         this.tModel.setAllUnselect();
     }//GEN-LAST:event_bEditarActionPerformed
+
+    private void bExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bExcluirActionPerformed
+        Produto estab = new Produto();
+        ArrayList rs;
+        ArrayList<Integer> selected = this.tModel.getIdSelected();
+        
+        rs = estab.deleteProduto(selected);
+        this.tModel.removeRow(rs);
+        JOptionPane.showMessageDialog(rootPane,
+                                      rs.size()+" produtos foram excluidos de "+selected.size()+"\n"
+                                    + "É permetido a exclusão só dos produtos que não tem mais no estoque",
+                                    "RESULTADO", JOptionPane.INFORMATION_MESSAGE);
+        this.tModel.setAllUnselect();
+    }//GEN-LAST:event_bExcluirActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

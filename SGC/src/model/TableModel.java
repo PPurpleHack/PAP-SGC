@@ -67,6 +67,26 @@ public class TableModel extends AbstractTableModel{
         this.fireTableDataChanged();
     }
     
+    public void removeRow(ArrayList<Integer> ids){
+        int index = 0;
+        boolean flag = false;
+        while(true){
+            index = this.getFirstSelected();
+            if(index == -1) break;
+            else{
+                for(Integer id: ids){
+                    if(this.getValueAt(index, 1).equals(Integer.toString(id))){
+                        flag = true;
+                        this.dados.remove(index);
+                    }
+                }
+                if(!flag)this.setValueAt(Boolean.FALSE, index, 0);
+                flag = false;
+            }
+        }
+        this.fireTableDataChanged();
+    }
+    
     public void updateRow(Integer x, Object[] dado){
         System.out.println("Entrou aq");
         this.dados.set(x, dado);

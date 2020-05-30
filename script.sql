@@ -27,7 +27,9 @@ CREATE TABLE estabelecimento(
 CREATE TABLE estabelecimento_telefone(
 	idEstabTelefone INT(4) NOT NULL AUTO_INCREMENT,
 	estabelecimento INT(4) NOT NULL,
-	numero VARCHAR(13) NOT NULL,
+  `ddd` VARCHAR(3) NOT NULL,
+  `numero` VARCHAR(9) NOT NULL,
+  `celular` BOOLEAN NOT NULL,
 	CONSTRAINT pk_estab_telefone PRIMARY KEY(idEstabTelefone),
 	CONSTRAINT fk_estab FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento)
 );
@@ -59,7 +61,9 @@ ADD COLUMN cpf VARCHAR(15) NOT NULL;
 CREATE TABLE funcionario_telefone(
 	idFuncTelefone INT(4) NOT NULL AUTO_INCREMENT,
 	funcionario INT(4) NOT NULL,
-	numero VARCHAR(13) NOT NULL,
+	`ddd` VARCHAR(3) NOT NULL,
+  `numero` VARCHAR(9) NOT NULL,
+  `celular` BOOLEAN NOT NULL,
 	CONSTRAINT pk_func_telefone PRIMARY KEY(idFuncTelefone),
 	CONSTRAINT fk_func FOREIGN KEY(funcionario) REFERENCES funcionario(matricula)
 );
@@ -91,6 +95,10 @@ ALTER TABLE estoque
 ADD CONSTRAINT fk_estab_estoque FOREIGN KEY(estabelecimento) REFERENCES estabelecimento(idEstabelecimento);
 ALTER TABLE estoque
 MODIFY COLUMN nome VARCHAR(200) NOT NULL,
+ALTER TABLE estoque
+MODIFY COLUMN descontoAtacado DOUBLE(4,2) DEFAULT NULL;
+ALTER TABLE estoque
+ADD COLUMN situacao VARCHAR(11) DEFAULT NULL;
 ##CRIAÇÃO DA TABELA LOTE
 ##AS COMPRAS SÃO FEITAS EM LOTE, LOGO AQUI SERÃO GUARDADAS AS INFORMAÇÕES DE LOTE
 CREATE TABLE lote(
@@ -119,6 +127,8 @@ CREATE TABLE caixa(
 	CONSTRAINT ck_descricao CHECK(descricao = 'COMPRA' OR descricao = 'VENDA' OR descricao = 'PERDA'),
 	CONSTRAINT ck_tipo CHECK(tipo IN('IN', 'OUT'))
 );
+ALTER TABLE caixa
+ADD COLUMN dtmRegistro DATE;
 
 ##ESTA TABELA GUARDA OS REGISTROS LIGANDO UMA SAIDA DE DINHEIRO DO CAIXA A UMA ENTRADA DE ITEM NO ESTOQUE
 CREATE TABLE compra(

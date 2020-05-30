@@ -1,5 +1,11 @@
 package control;
 
+import connection.Conexao;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 public class Caixa {
     
     private int id;
@@ -8,15 +14,33 @@ public class Caixa {
     private Double vlrDinheiro;
     
     public Caixa(){
-
+        
     }
 
     public Caixa(int id){
 
     }
 
-    public int registrarCompra(){
-        return 1;
+    public void registrarCompra(int idLote)throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        ResultSet rs = null;
+        String query;
+        
+        query = "insert into caixa(tipo, descricao, vlrDinheiro, dtmRegistro) "
+              + "values('"+tipo+"', '"+descricao+"', "+vlrDinheiro+", now())";
+        stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        stmt.execute();
+        rs = stmt.getGeneratedKeys();
+        if(rs.next()) this.id = rs.getInt(1);
+        System.out.println(id);
+        
+        query = "insert into compra(idCaixa, idLote) "
+              + "values(?, ?)";
+        stmt = con.prepareStatement(query);
+        stmt.setInt(1, id);
+        stmt.setInt(2, idLote);
+        stmt.execute();
     }
 
     public int registrarVenda(){

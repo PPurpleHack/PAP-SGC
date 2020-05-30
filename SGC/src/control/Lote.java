@@ -48,6 +48,14 @@ public class Lote extends Control{
             Produto produto = new Produto(this.estoque);
             produto.setQtdProduto(produto.getQtdProduto()+this.qtdProduto);
             produto.updateQuantidade();
+            
+            //FAZ O REGISTRO DE ENTRADA NO CAIXA
+            Caixa caixa = new Caixa();
+            caixa.setTipo("OUT");
+            caixa.setDescricao("COMPRA");
+            caixa.setVlrDinheiro(vlrPago);
+            caixa.registrarCompra(id);
+            
             return 1;
         }
         Conexao.closeConnection(con, stmt, rs);
