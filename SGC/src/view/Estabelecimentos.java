@@ -28,7 +28,6 @@ public final class Estabelecimentos extends javax.swing.JInternalFrame {
         this.loadTable();
         //****Seta modelo
         tableEstabelecimento.setModel(this.tModel);
-        
     }
     
     public void loadTable(){

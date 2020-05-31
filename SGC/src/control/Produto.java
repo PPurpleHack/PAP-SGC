@@ -122,6 +122,27 @@ public class Produto extends Control{
         this.run(query);
     }
     
+    public Map listItem(int estab, String prod)throws SQLException{
+        Map item = new HashMap();
+        ResultSet rs;
+        String query;
+        
+        query = "SELECT *, "
+                + "ROUND(precoVarejo - (precoVarejo * (descontoAtacado/100)), 2) \"precoComDesconto\" FROM estoque "
+                + "WHERE 1 = 1 AND ifnull(situacao, 'ATIVO') <> 'EXCLUIDO' and codProduto = '"+prod+"' and estabelecimento = '"+estab+"'";
+        rs = this.run(query);
+        while(rs.next()){
+            item.put("id", rs.getInt("idEstoque"));
+            item.put("codigo", rs.getString("codProduto"));
+            item.put("nome", rs.getString("nome"));
+            item.put("quantidade", rs.getString("qtdProduto"));
+            item.put("precoVarejo", rs.getDouble("precoVarejo"));
+            item.put("precoAtacado", rs.getDouble("precoComDesconto"));
+            item.put("atacado", rs.getInt("qtdAtacado"));
+        }
+        return item;
+    }
+    
     public ArrayList<Map> listaEstoque(Map<String, String> filtros)throws SQLException{
         ArrayList<Map> estoque = new ArrayList();
         Map<String, String> linha;

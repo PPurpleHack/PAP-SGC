@@ -57,6 +57,11 @@ public class TableModel extends AbstractTableModel{
         this.fireTableDataChanged();
     }
     
+    public void removeRow(int index){
+        this.dados.remove(index);
+        this.fireTableDataChanged();
+    }
+    
     public void removeRow(){
         int index = 0;
         while(true){

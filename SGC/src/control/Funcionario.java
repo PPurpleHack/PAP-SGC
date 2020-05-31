@@ -190,6 +190,43 @@ public class Funcionario extends Control{
         return false;
     }
     
+    public boolean checkUsuario(String senha)throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean flag = false;
+        String query;
+        
+        query = "select count(matricula)\"a\" from funcionario where senha = md5(?) and matricula = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setString(1, senha);
+        stmt.setInt(2, matricula);
+        rs = stmt.executeQuery();
+        if(rs.next()){
+            if(rs.getInt("a") == 1) flag = true;
+        }
+        Conexao.closeConnection(con, stmt, rs);
+        return flag;
+    }
+    
+    public boolean trocarSenha(String senha)throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String query;
+        
+        query = "update funcionario "
+                + "set senha = MD5('"+senha+"') "
+                + "where matricula = "+this.matricula+";";
+        stmt = con.prepareStatement(query);
+        if(stmt.executeUpdate() == 1){
+            Conexao.closeConnection(con, stmt, rs);
+            return true;
+        }
+        Conexao.closeConnection(con, stmt, rs);
+        return false;
+    }
+    
     private boolean verificaSeFuncionarioTemConta()throws SQLException{
         //VERIFICA SE O FUNCIONARIO JÁ TEM UMA CONTA
         String query = "select IFNULL(login, 0)\"login\" from funcionario where matricula = "+this.matricula;

@@ -17,10 +17,6 @@ public class Caixa {
         
     }
 
-    public Caixa(int id){
-
-    }
-
     public void registrarCompra(int idLote)throws SQLException{
         Connection con = Conexao.getConexao();
         PreparedStatement stmt;

@@ -1,6 +1,8 @@
 package view;
 import control.Produto;
+import control.Estabelecimento;
 import model.TableModel;
+import model.ComboBox;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +102,7 @@ public class Estoque extends javax.swing.JInternalFrame {
         jComboBox2 = new javax.swing.JComboBox<>();
         bPesquisar = new javax.swing.JLabel();
         bEntradaEstoque = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        bSaida = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         bEditar = new javax.swing.JButton();
 
@@ -157,8 +159,13 @@ public class Estoque extends javax.swing.JInternalFrame {
         });
         getContentPane().add(bEntradaEstoque, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 150, 70));
 
-        jButton3.setText("Saída");
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 420, 150, 70));
+        bSaida.setText("Saída");
+        bSaida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSaidaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bSaida, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 420, 150, 70));
 
         jButton4.setText("Tela Lotes");
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 420, 140, 70));
@@ -219,13 +226,45 @@ public class Estoque extends javax.swing.JInternalFrame {
         this.tModel.setAllUnselect();
     }//GEN-LAST:event_bExcluirActionPerformed
 
+    private void bSaidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSaidaActionPerformed
+        try{
+            Estabelecimento estabelecimento = new Estabelecimento();
+            ArrayList<ComboBox> cbEstab = new ArrayList();
+            cbEstab.add(new ComboBox(0, "<Estabelecimento>"));
+            for(ArrayList listaEstab: estabelecimento.listaEstabComboBox()){
+                cbEstab.add(new ComboBox(Integer.parseInt((String)listaEstab.get(0)), (String)listaEstab.get(1)));
+            }
+            try{
+                ComboBox setRes = (ComboBox)JOptionPane.showInputDialog(null,
+                                                "Selecione o estabelecimento",
+                                                "Estabelecimento",
+                                                JOptionPane.PLAIN_MESSAGE,
+                                                null,
+                                                cbEstab.toArray(),
+                                                "");
+                switch(setRes.getIndex()){
+                    case 0:
+                        JOptionPane.showMessageDialog(rootPane, "Nenhum estabelecimento selecionado");
+                        break;
+                    default:
+                        new Venda(setRes.getIndex()).setVisible(true);
+                        break;
+                }
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(rootPane, ex);
+            }
+        }catch(SQLException ex){
+            System.out.println(ex);    
+        }
+    }//GEN-LAST:event_bSaidaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bEditar;
     private javax.swing.JButton bEntradaEstoque;
     private javax.swing.JButton bExcluir;
     private javax.swing.JLabel bPesquisar;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton bSaida;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
