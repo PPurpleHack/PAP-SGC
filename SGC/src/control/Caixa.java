@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Map;
 
 public class Caixa {
     
@@ -39,8 +40,26 @@ public class Caixa {
         stmt.execute();
     }
 
-    public int registrarVenda(){
-        return 1;
+    public void registrarVendaCaixa()throws SQLException{
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        ResultSet rs = null;
+        String query;
+        
+        query = "insert into caixa(tipo, descricao, vlrDinheiro, dtmRegistro)"
+                + " values(?,?,?,now())";
+        stmt = con.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, tipo);
+        stmt.setString(2, descricao);
+        stmt.setDouble(3, vlrDinheiro);
+        stmt.execute();
+        rs = stmt.getGeneratedKeys();
+        if(rs.next()) this.id = rs.getInt(1);
+        Conexao.closeConnection(con, stmt, rs);
+    }
+    
+    public void registraVendaLote(Map i)throws SQLException{
+        String query = "insert into venda(idCaixa, idLote)";
     }
     
     //Getters and Setters
