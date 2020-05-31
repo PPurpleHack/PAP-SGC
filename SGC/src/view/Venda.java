@@ -65,7 +65,7 @@ public class Venda extends javax.swing.JFrame {
         tableItem = new javax.swing.JTable();
         bFinalizar = new javax.swing.JButton();
         close = new javax.swing.JLabel();
-        bAdd1 = new javax.swing.JButton();
+        bAdd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -93,9 +93,9 @@ public class Venda extends javax.swing.JFrame {
             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tItens, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tItens, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tPreco, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                .addComponent(tPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -171,13 +171,13 @@ public class Venda extends javax.swing.JFrame {
         });
         jPanel1.add(close, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, -1, -1));
 
-        bAdd1.setText("Adicionar");
-        bAdd1.addActionListener(new java.awt.event.ActionListener() {
+        bAdd.setText("Adicionar");
+        bAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bAdd1ActionPerformed(evt);
+                bAddActionPerformed(evt);
             }
         });
-        jPanel1.add(bAdd1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 540, 40));
+        jPanel1.add(bAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 540, 40));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 535));
 
@@ -208,9 +208,52 @@ public class Venda extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_bOkActionPerformed
 
-    private void bAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAdd1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_bAdd1ActionPerformed
+    private void bAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddActionPerformed
+        try{
+            int qtd = Integer.parseInt(JOptionPane.showInputDialog(rootPane, "Quantidade"));
+            this.produto.put("qtdSelecionado", qtd);
+            if(qtd >= (Integer)this.produto.get("atacado")){
+                this.produto.put("precoAPagar", qtd * (Double)this.produto.get("precoVarejo"));
+            }else{
+                this.produto.put("precoAPagar", qtd * (Double)this.produto.get("precoVarejo"));
+            }
+            this.listaProduto.add(this.produto);
+            String[] listaRemover = new String[]{   
+                "<html>",
+                "<body>",
+                "<div>",
+                "</div>",
+                "</body>",
+                "</html>"};
+            String lista = tItens.getText();
+            String preco = tPreco.getText();
+            for(String r: listaRemover){
+                lista = lista.replace(r, "");
+                preco = preco.replace(r, "");
+            }
+            String insereInfo = lista+produto.get("codigo")+" --- "+produto.get("nome")+" --- "+qtd+"x"+"<br>";
+            String inserePreco = preco+"R$ "+this.produto.get("precoAPagar")+"<br>";
+            tItens.setText(
+                    "<html>"
+                  + "<body>"
+                      + "<div>"+insereInfo+"</div>"
+                      + "</body>"
+                  + "</html>");
+            tPreco.setText(
+                    "<html>"
+                  + "<body>"
+                      + "<div>"+inserePreco+"</div>"
+                      + "</body>"
+                  + "</html>");
+            int total = 0;
+            for(Map i: listaProduto){
+                total += (Double)i.get("precoAPagar");
+            }
+            tTotal.setText(Double.toString(total));
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_bAddActionPerformed
 
     private void bFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bFinalizarActionPerformed
         try{
@@ -222,13 +265,14 @@ public class Venda extends javax.swing.JFrame {
             for(Map i: listaProduto){
                 c.registraVendaLote(i);
             }
+            JOptionPane.showMessageDialog(rootPane, "VENDA REALIAZADA COM SUCESSO", "SUCESSO", JOptionPane.INFORMATION_MESSAGE);
         }catch(SQLException ex){
             JOptionPane.showMessageDialog(rootPane, ex, "ERRO", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_bFinalizarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bAdd1;
+    private javax.swing.JButton bAdd;
     private javax.swing.JButton bFinalizar;
     private javax.swing.JButton bOk;
     private javax.swing.JLabel close;

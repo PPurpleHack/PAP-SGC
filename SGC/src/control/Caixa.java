@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Map;
 
-public class Caixa {
+public class Caixa extends Control{
     
     private int id;
     private String tipo;
@@ -59,7 +59,22 @@ public class Caixa {
     }
     
     public void registraVendaLote(Map i)throws SQLException{
-        String query = "insert into venda(idCaixa, idLote)";
+        Connection con = Conexao.getConexao();
+        PreparedStatement stmt;
+        ResultSet rs = null;
+        int idLote = 0;
+        
+        stmt = con.prepareStatement("select idLote from lote where estoque = "+i.get("id")+" limit 1");
+        rs = stmt.executeQuery();
+        if(rs.next()) idLote = rs.getInt("idLote");
+        Conexao.closeConnection(con, stmt, rs);
+        String query = "insert into venda(idCaixa, idLote) values("+id+","+idLote+")";
+        this.run(query);
+        
+        Produto p = new Produto();
+        p.setId((Integer)i.get("id"));
+        p.setQtdProduto(Integer.parseInt((String)i.get("quantidade")) - (Integer)i.get("qtdSelecionado"));
+        p.updateQuantidade();
     }
     
     //Getters and Setters
