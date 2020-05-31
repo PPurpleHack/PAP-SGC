@@ -68,6 +68,15 @@ CREATE TABLE funcionario_telefone(
 	CONSTRAINT fk_func FOREIGN KEY(funcionario) REFERENCES funcionario(matricula)
 );
 
+##Add admin
+insert into funcionario(nome, sobrenome, cep, numero, cidade, bairro, estado, pais, email, funcao)
+values('ADMIN', '', '', 0, '', '', '', '', '', select idFuncao from funcao limit 1);
+update funcionario
+set login = select idFuncionario where nome = 'ADMIN',
+	senha = md5('123')
+where nome = 'ADMIN';
+
+
 ##CRIA A TABELA SETOR, REFERENTE AO SETOR QUE É ALOCADO O PRODUTO
 CREATE TABLE setor(
 	idSetor INT(3) NOT NULL AUTO_INCREMENT,
