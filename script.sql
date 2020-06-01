@@ -1,4 +1,6 @@
 ############################################Script Principal#################################################
+CREATE DATABASE pap_aplicacao;
+USE pap_aplicacao;
 ##CRIA A TABELA DE FUNÇÕES DOS FUNCIONARIOS NA EMPRESA
 CREATE TABLE funcao(
 	idFuncao INT(2) NOT NULL AUTO_INCREMENT,
@@ -70,9 +72,9 @@ CREATE TABLE funcionario_telefone(
 
 ##Add admin
 insert into funcionario(nome, sobrenome, cep, numero, cidade, bairro, estado, pais, email, funcao)
-values('ADMIN', '', '', 0, '', '', '', '', '', select idFuncao from funcao limit 1);
+values('ADMIN', '', '', 0, '', '', '', '', '', 1);
 update funcionario
-set login = select idFuncionario where nome = 'ADMIN',
+set login = 1,
 	senha = md5('123')
 where nome = 'ADMIN';
 
